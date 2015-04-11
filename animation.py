@@ -1,7 +1,7 @@
 __author__ = 'Ira'
 import pygame
 import os
-
+from pygame.locals import *
 
 class Animation:
     def __init__(self, spritesheet_path, rectangle, info_dict):
@@ -43,17 +43,18 @@ class Animation:
     def _create_state(self, state_name, row_number, frame_count):
         frames = []
         for col_number in range(frame_count):
-            frames[col_number] = pygame.Rect( self._rectangle.x*col_number, row_number, self._rectangle.x*(col_number+1), row_number+1 )
+            print(col_number)
+            frames.append(pygame.Rect( self._rectangle.x*col_number, row_number, self._rectangle.x*(col_number+1), row_number+1 ))
 
         self._states[state_name] = (frame_count, frames)
         return
 
     def _load_image(self, spritesheet_path):
-        try:
-            self._spritesheet = pygame.image.load(os.path.join(*spritesheet_path)).convert()
+        #try:
+        self._spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
 
-        except:
-            print ('An error has occurred while the game was loading the image ', spritesheet_path)
+        #except:
+        #    print('An error has occurred while the game was loading the image ', spritesheet_path)
 
     def _next_frameindex(self, frame_count):
         """
@@ -82,6 +83,11 @@ class Animation:
 
 
 if __name__ == "__main__":
-    #rect = pygame.Rect(0, 0, 96, 144)
-    mine = Animation(["idleLeft.png"])
-    mine._frame_at(0, 0, 96, 144)
+    pygame.init()
+    rect = pygame.Rect(0, 0, 96, 144)
+    size = 480, 640
+    _display_surf = pygame.display.set_mode(size, pygame.SWSURFACE)
+
+    info = {"check": (0, 4)}
+    mine = Animation(os.path.join('Art', 'idleLeft.png'), rect, info)
+    mine._frame_at(pygame.Rect(0, 0, 96, 144))
