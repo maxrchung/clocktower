@@ -1,6 +1,7 @@
 import pygame
 import os
 import actor
+import playerActor
 import vector
 import physicsManager
 from pygame.locals import *
@@ -27,7 +28,7 @@ class App:
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
-        self.actors = [actor.Actor(vector.Vector(0, 0), os.path.join('Art', 'idleLeft.png'), True, (self.renderables)),
+        self.actors = [playerActor.PlayerActor(vector.Vector(0, 0), os.path.join('Art', 'idleLeft.png'), (self.renderables)),
                        actor.Actor(vector.Vector(0, 500), os.path.join('Art', 'idleRight.png'), False, (self.renderables, self.staticColliders))]
  
     def on_event(self, event):
@@ -36,12 +37,14 @@ class App:
     def on_loop(self):
         # update at 60 fps
         self.clock.tick(60)
+        # update inputs
+        self.actors[0].update()
         # update physics for each actor in the game
         for a in self.actors:
             a.updatePhysics(self.clock.get_time())
-        # check for collisions
+        # check for collisions with player against static group
         collisionList = physicsManager.checkCollisionAgainstGroup(self.actors[0], self.staticColliders)
-        # if there were collisions, resolve intersections
+        # if there were collisions with player, resolve intersections
         for collider in collisionList.keys():
             physicsManager.resolveIntersection(self.actors[0], collider)
     def on_render(self):
