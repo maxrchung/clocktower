@@ -2,6 +2,7 @@ import pygame
 import os
 import actor
 import vector
+import physicsManager
 from pygame.locals import *
  
 class App:
@@ -11,8 +12,10 @@ class App:
         self.size = self.weight, self.height = 480, 640
         # Need a clock to scale physics vectors
         self.clock = pygame.time.Clock()
-        # Keep a layer of renderable sprites
+        # Keep a group of renderable actors
         self.renderables = pygame.sprite.LayeredUpdates()
+        # Keep a group of static colliders
+        self.staticColliders = pygame.sprite.Group()
         # Temporary background
         self.background = pygame.Surface((480, 640))
         self.background.fill((0, 0, 0))
@@ -21,16 +24,26 @@ class App:
         pygame.init()
         self._display_surf = pygame.display.set_mode(self.size, pygame.SWSURFACE)
         self._running = True
-        self.actors = [actor.Actor(vector.Vector(0, 0), os.path.join('data', 'sprite.png'), self.renderables)]
+        # create actors
+        # 0: player actor. uses gravity, part of renderables
+        # 1: static actor. doesn't use gravity, part of renderables and staticColliders
+        self.actors = [actor.Actor(vector.Vector(0, 0), os.path.join('Art', 'idleLeft.png'), True, (self.renderables)),
+                       actor.Actor(vector.Vector(0, 500), os.path.join('Art', 'idleRight.png'), False, (self.renderables, self.staticColliders))]
  
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self._running = False
     def on_loop(self):
-        # update on 
+        # update at 60 fps
         self.clock.tick(60)
+        # update physics for each actor in the game
         for a in self.actors:
             a.updatePhysics(self.clock.get_time())
+        # check for collisions
+        collisionList = physicsManager.checkCollisionAgainstGroup(self.actors[0], self.staticColliders)
+        # if there were collisions, resolve intersections
+        for collider in collisionList.keys():
+            physicsManager.resolveIntersection(self.actors[0], collider)
     def on_render(self):
         # Draw everything in the LayeredUpdates group
         dirty = self.renderables.draw(self._display_surf)

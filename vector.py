@@ -55,3 +55,5 @@ class Vector():
             self.y = target.y
         
         return self
+    def reverse(self):
+        return -1*self
