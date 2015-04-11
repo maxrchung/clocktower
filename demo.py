@@ -27,6 +27,7 @@ class App:
         if event.type == pygame.QUIT:
             self._running = False
     def on_loop(self):
+        # update on 
         self.clock.tick(60)
         for a in self.actors:
             a.updatePhysics(self.clock.get_time())
