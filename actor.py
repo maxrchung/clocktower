@@ -24,7 +24,7 @@ class Actor(pygame.sprite.Sprite):
         self.velocity = vector.Vector(0.0,0.0)
         if useGravity:
             self.accels['gravity'] = 4.0
-            self.targetVelocities['gravity'] = vector.Vector(0.0, -12.0)
+            self.targetVelocities['gravity'] = vector.Vector(None, -12.0)
         
         # Add sprite into the specified groups. 
         self.add(groups);
