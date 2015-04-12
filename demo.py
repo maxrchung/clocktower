@@ -31,9 +31,12 @@ class App:
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
         playerInfo = {"IDLE" : (0, 4)}
-        playerAnimation = animation.Animation(os.path.join('Art', 'idleRight.png'), pygame.Rect(0, 0, 96, 144), playerInfo)
-        playerAnimation.update_frame("IDLE")
-        self.playerA = playerActor.PlayerActor(vector.Vector(0,0), playerAnimation, (self.renderables))
+        #playerAnimation = animation.Animation(os.path.join('Art', 'idleRight.png'), pygame.Rect(0, 0, 96, 144), playerInfo)
+        #playerAnimation.update_frame("IDLE")
+
+        #=========
+
+        #self.playerA = playerActor.PlayerActor(vector.Vector(0,0), playerAnimation, (self.renderables))
         
         gearInfo = {"SINGLEFRAME" : (0, 1)}
         gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
@@ -62,6 +65,7 @@ class App:
         # if there were collisions with player, resolve intersections
         for collider in collisionList.keys():
             physicsManager.resolveIntersection(self.playerA, collider)
+
     def on_render(self):
         # Draw everything in the LayeredUpdates group
         dirty = self.renderables.draw(self._display_surf)
@@ -83,6 +87,52 @@ class App:
             self.on_loop()
             self.on_render()
         self.on_cleanup()
+
+    def load_player_sprites(self):
+        PLAYERSIZE = pygame.Rect(0, 0, 96, 144)
+        info_dic = {"idleLeft": (0, 4),
+                    "idleRight": (1, 4),
+                    "moveLeft": (2, 4),
+                    "moveRight": (3, 4),
+                    "turnToLeft": (4, 7),
+                    "turnToRight": (5, 7)}
+        self.playerAnimation = animation.Animation(os.path.join('Art', 'playerSheet.png'),
+                                                   PLAYERSIZE,
+                                                   info_dic)
+
+    def load_death_sprites(self):
+        DEATHSIZE = pygame.Rect(0, 0, 240, 240)
+        info_dic = {"deathLeft": (0, 9),
+                    "deathRight": (1, 9)}
+        self.deathAnimation = animation.Animation(os.path.join('Art', 'deathSheet'),
+                                                    DEATHSIZE,
+                                                    info_dic)
+
+    def load_gear_sprites(self):
+        GEARSIZE1 = pygame.Rect(0, 0, 48, 48)
+        GEARSIZE2 = pygame.Rect(0, 0, 96, 96)
+        GEARSIZE3 = pygame.Rect(0, 0, 144, 144)
+        info_dic1 = {"sVertGear": (0, 1)}
+        info_dic2 = {"mVertGear": (0, 1)}
+        info_dic3 = {"lVertGear": (0, 1)}
+
+        self.sVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1'),
+                                                        GEARSIZE1,
+                                                        info_dic1)
+        self.mVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear2'),
+                                                        GEARSIZE2,
+                                                        info_dic2)
+        self.lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear3'),
+                                                        GEARSIZE3,
+                                                        info_dic3)
+
+
+
+
+
+
+
+
  
 if __name__ == "__main__" :
     theApp = App()
