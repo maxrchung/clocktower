@@ -16,15 +16,16 @@ class Animation:
         self._current_frameindex = 0
 
         # inflate rectangle. negative values will shrink it
-        self._rectangle = rectangle.inflate(inflate, inflate)
-        print(self._rectangle)
+        ratio = rectangle.height / rectangle.width
+        self._rectangle = rectangle.inflate(inflate, inflate * ratio)
 
-        # caculate size to scale spritesheet to
+        # caculate size to scale spritesheet
         widthMax = 1
         heightMax = len(info_dict)
         for info in info_dict.values():
             if info[1] > widthMax:
                 widthMax = info[1]
+        # use scaled rectangle to make scaled spritesheet
         self._spritesheet_scale_to_width = widthMax * self._rectangle.width
         self._spritesheet_scale_to_height = heightMax * self._rectangle.height
         
@@ -68,7 +69,7 @@ class Animation:
 
     def _load_image(self, spritesheet_path):
         self._spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
-        pygame.transform.smoothscale(self._spritesheet, (self._spritesheet_scale_to_width, self._spritesheet_scale_to_height))
+        self._spritesheet = pygame.transform.smoothscale(self._spritesheet, (self._spritesheet_scale_to_width, self._spritesheet_scale_to_height))
 
     def _next_frameindex(self, frame_count):
         """
