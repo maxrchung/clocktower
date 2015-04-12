@@ -15,7 +15,7 @@ class PlayerActor(actor.Actor):
         self.input = InputManager.InputManager()
         self.timer = 0
         self.turning = -1
-        self.pressed_space = False
+        self.jumping = False
         
     def update(self):
         # update the input manager
@@ -27,9 +27,36 @@ class PlayerActor(actor.Actor):
 
     def checkInputs(self):
         oldstate = str(self.currState)
+
+        if self.jumping:
+            if self.input.L_DOWN:
+                self.prev_orientation, self.curr_orientation = self.curr_orientation, "Left"
+                self.currState = "JUMP_LEFT"
+
+            if self.input.R_DOWN:
+                self.prev_orientation, self.curr_orientation = self.curr_orientation, "Right"
+                self.currState = "JUMP_RIGHT"
+
+            elif self.input.SPACE_DOWN:
+                pass
+
+        else:
+            if self.input.L_DOWN:
+                self.prev_orientation, self.curr_orientation = self.curr_orientation, "Left"
+                self.currState = "MOVE_LEFT"
+
+            if self.input.R_DOWN:
+                self.prev_orientation, self.curr_orientation = self.curr_orientation, "Right"
+                self.currState = "MOVE_RIGHT"
+
+            elif self.input.SPACE_DOWN:
+                self.currState = "JUMP_NEUTRAL"
+            else:
+                self.currState = "IDLE"
+        """
         if self.input.L_DOWN:
             self.prev_orientation, self.curr_orientation = self.curr_orientation, "Left"
-            if self.currState == "JUMPING":
+            if self.jumping:
                 pass
             elif self.input.SPACE_DOWN:
                 self.currState = "JUMP_LEFT"
@@ -47,7 +74,7 @@ class PlayerActor(actor.Actor):
                 self.currState = "MOVE_RIGHT"
 
         elif self.input.SPACE_DOWN:
-            if not self.currState == "JUMPING":
+            if not self.jumping:
                 print("original jump")
                 self.currState = "JUMP_NEUTRAL"
                 self.jumping = True
@@ -56,21 +83,29 @@ class PlayerActor(actor.Actor):
 
         else:
             self.currState = "IDLE"
+        """
 
     def checkState(self):
         if self.currState == "MOVE_LEFT":
             self.accels['move'] = 12.0
             self.targetVelocities['move'] = actor.vector.Vector(-5.0, None)
+
         elif self.currState == "MOVE_RIGHT":
             self.accels['move'] = 12.0
             self.targetVelocities['move'] = actor.vector.Vector(5.0, None)
-        elif self.currState == "JUMPING":
-            if self.accels['jump'] != 0:
+
+        elif self.jumping:
+            if 'jump' in self.accels and self.accels['jump'] != 0:
                 self.accels['jump'] -= 10
+            else:
+                #self.jumping = False
+                self.currState = "IDLE"
+
         elif self.currState == "JUMP_NEUTRAL":
+            self.jumping = True
             self.accels['jump'] = 200.0
             self.targetVelocities['jump'] = actor.vector.Vector(None, 5.0)
-            self.currState = "JUMPING"
+            self.currState = "JUMP_NEUTRAL"
 
         elif self.currState == "IDLE":
             self.accels['move'] = 20.0
