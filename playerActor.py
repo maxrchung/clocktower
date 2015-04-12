@@ -1,7 +1,8 @@
 import pygame
 import actor
 import InputManager
-import physicsManager
+import soundManager
+
 from pygame.locals import *
  
 class PlayerActor(actor.Actor):
@@ -13,6 +14,7 @@ class PlayerActor(actor.Actor):
         self.orientation = "right"
         # create an input manager
         self.input = InputManager.InputManager()
+        self.sound = soundManager.SoundManager()
         
     def update(self):
         # update the input manager
@@ -29,6 +31,7 @@ class PlayerActor(actor.Actor):
                 self.currState = "JUMP_LEFT"
             else:
                 self.currState = "MOVE_LEFT"
+                self.sound.pauseMusic()
         elif self.input.R_DOWN:
             self.orientation = "right"
             if self.input.SPACE_DOWN:
@@ -49,9 +52,8 @@ class PlayerActor(actor.Actor):
             self.accels['move'] = -4.0
             self.targetVelocities['move'] = actor.vector.Vector(12.0, 0.0)
         elif self.currState == "JUMP_NEUTRAL":
-            
-                self.accels['jump'] = 4.0
-                self.targetVelocities['jump'] = actor.vector.Vector(0.0, 12.0)
+            self.accels['jump'] = 4.0
+            self.targetVelocities['jump'] = actor.vector.Vector(0.0, 12.0)
         elif self.currState == "IDLE":
             self.accels['move'] = 0.0
             self.targetVelocities['move'] = actor.vector.Vector(0.0, 0.0)
