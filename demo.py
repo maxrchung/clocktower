@@ -33,23 +33,18 @@ class App:
         #playerInfo = {"IDLE" : (0, 4)}
         #playerAnimation = animation.Animation(os.path.join('Art', 'idleRight.png'), pygame.Rect(0, 0, 96, 144), playerInfo)
         #playerAnimation.update_frame("IDLE")
-
         # load all sprites
-
-        self.load_player_sprites()
-        self.load_death_sprites()
-        self.load_gear_sprites()
-
-        self.playerAnimation.update_frame("idleLeft")
-
-        self.playerA = playerActor.PlayerActor(vector.Vector(0,0), self.playerAnimation, (self.renderables))
-        
+        #self.load_player_sprites()
+        #self.load_death_sprites()
+        #self.load_gear_sprites()
+        #self.playerAnimation.update_frame("idleLeft")
         #gearInfo = {"SINGLEFRAME" : (0, 1)}
         #gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
 
-        gearA = gearActor.GearActor(vector.Vector(0, 500), self.sVertGearAnimation, False, (self.renderables, self.gears))
-
-        self.actors = (self.playerA, gearA)
+        self.player = self.get_player_actor(0, 0, -20)
+        gearA = self.get_sVertGearActor(0, 500, False)
+        
+        self.actors = (self.player, gearA)
  
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -58,8 +53,7 @@ class App:
         # update at 60 fps
         self.clock.tick(60)
         # update inputs
-        self.playerA.update()
-        print(self.playerA.velocity)
+        self.player.update()
         # spin gears
         for gear in self.gears.sprites():
             gear.rotateGear()
@@ -67,10 +61,10 @@ class App:
         for a in self.actors:
             a.updatePhysics(self.clock.get_time())
         # check for collisions with player against gears group
-        collisionList = physicsManager.checkCollisionAgainstGroup(self.playerA, self.gears)
+        collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
         # if there were collisions with player, resolve intersections
         for collider in collisionList.keys():
-            physicsManager.resolveIntersection(self.playerA, collider)
+            physicsManager.resolveIntersection(self.player, collider)
 
     def on_render(self):
         # Draw everything in the LayeredUpdates group
@@ -94,7 +88,7 @@ class App:
             self.on_render()
         self.on_cleanup()
 
-    def load_player_sprites(self):
+    def get_player_actor(self, x, y, scale):
         PLAYERSIZE = pygame.Rect(0, 0, 96, 144)
         info_dic = {"idleLeft": (0, 4),
                     "idleRight": (1, 4),
@@ -102,41 +96,62 @@ class App:
                     "moveRight": (3, 4),
                     "turnToLeft": (4, 7),
                     "turnToRight": (5, 7)}
-        self.playerAnimation = animation.Animation(os.path.join('Art', 'playerSheet.png'),
+        playerAnimation = animation.Animation(os.path.join('Art', 'playerSheet.png'),
                                                    PLAYERSIZE,
-                                                   info_dic)
+                                                   info_dic, scale)
+        playerAnimation.update_frame("idleRight")
+        return playerActor.PlayerActor(vector.Vector(x, y), playerAnimation, (self.renderables))
 
-    def load_death_sprites(self):
+    def get_death_actor(self, x, y, scale):
+        """
+        :return: actor, function creates a death animation and puts it at the given x and y
+        """
         DEATHSIZE = pygame.Rect(0, 0, 240, 240)
         info_dic = {"deathLeft": (0, 9),
                     "deathRight": (1, 9)}
-        self.deathAnimation = animation.Animation(os.path.join('Art', 'deathSheet'),
+        deathAnimation = animation.Animation(os.path.join('Art', 'deathSheet.png'),
                                                     DEATHSIZE,
-                                                    info_dic)
+                                                    info_dic,
+                                                    scale)
+        deathAnimation.update_frame("deathLeft")
+        return actor.Actor(vector.Vector(x, y), deathAnimation, False, (self.renderables))
 
-    def load_gear_sprites(self):
+    def get_lVertGearActor(self, x, y, clockwise):
         """
-        :return: void, function creates the animations for all gears and automatically puts them in the ONLY state
+        :return: gearActor, function creates a large gear and puts it in the ONLY state. Rotation is done in code.
         """
-        GEARSIZE1 = pygame.Rect(0, 0, 48, 48)
-        GEARSIZE2 = pygame.Rect(0, 0, 96, 96)
         GEARSIZE3 = pygame.Rect(0, 0, 144, 144)
-        info_dic1 = {"sVertGear": (0, 1)}
-        info_dic2 = {"mVertGear": (0, 1)}
         info_dic3 = {"lVertGear": (0, 1)}
-
-        self.sVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1'),
-                                                        GEARSIZE1,
-                                                        info_dic1)
-        self.mVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear2'),
-                                                        GEARSIZE2,
-                                                        info_dic2)
-        self.lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear3'),
+        lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear3.png'),
                                                         GEARSIZE3,
                                                         info_dic3)
-        self.sVertGearAnimation.update_frame("sVertGear")
-        self.mVertGearAnimation.update_frame("mVertGear")
-        self.lVertGearAnimation.update_frame("lVertGear")
+        lVertGearAnimation.update_frame("lVertGear")
+        return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, (self.renderables, self.gears))
+
+    def get_mVertGearActor(self, x, y, clockwise):
+        """
+        :return: gearActor, function creates a medium gear and puts it in the ONLY state. Rotation is done in code.
+        """
+        GEARSIZE2 = pygame.Rect(0, 0, 96, 96)
+        info_dic2 = {"mVertGear": (0, 1)}
+        mVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear2.png'),
+                                                        GEARSIZE2,
+                                                        info_dic2)
+        mVertGearAnimation.update_frame("mVertGear")
+        return gearActor.GearActor(vector.Vector(x, y), mVertGearAnimation, clockwise, (self.renderables, self.gears))
+
+    def get_sVertGearActor(self, x, y, clockwise):
+        """
+        :return: gearActor, function creates a small gear and puts it in the ONLY state. Rotation is done in code.
+        """
+        GEARSIZE1 = pygame.Rect(0, 0, 48, 48)
+        info_dic1 = {"sVertGear": (0, 1)}
+        sVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'),
+                                                        GEARSIZE1,
+                                                        info_dic1)
+        sVertGearAnimation.update_frame("sVertGear")
+        return gearActor.GearActor(vector.Vector(x, y), sVertGearAnimation, clockwise, (self.renderables, self.gears))
+
 
 
 

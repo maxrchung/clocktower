@@ -4,21 +4,34 @@ import os
 from pygame.locals import *
 
 class Animation:
-    def __init__(self, spritesheet_path, rectangle, info_dict):
+    def __init__(self, spritesheet_path, rectangle, info_dict, inflate = 0):
         """
         :param spritesheet_path: a list of folder/file names that are the pathway to the raw image file
         :param rectangle: rectangle object
         :param info_dict: "statename" --> ( rownumber, frame_count ); where rownumber starts at 0
         """
-        self._load_image(spritesheet_path)
-
         self._states = {}
 
         self._current_state = ""
         self._current_frameindex = 0
 
-        self._rectangle = rectangle
+        # inflate rectangle. negative values will shrink it
+        self._rectangle = rectangle.inflate(inflate, inflate)
+        print(self._rectangle)
 
+        # caculate size to scale spritesheet to
+        widthMax = 1
+        heightMax = len(info_dict)
+        for info in info_dict.values():
+            if info[1] > widthMax:
+                widthMax = info[1]
+        self._spritesheet_scale_to_width = widthMax * self._rectangle.width
+        self._spritesheet_scale_to_height = heightMax * self._rectangle.height
+        
+        # now load the spritesheet with scaling
+        self._load_image(spritesheet_path)
+
+        # create animation sequences out of each given state
         for (state_name, info) in info_dict.items():
             self._create_state(state_name, info[0], info[1])
 
@@ -55,6 +68,7 @@ class Animation:
 
     def _load_image(self, spritesheet_path):
         self._spritesheet = pygame.image.load(spritesheet_path).convert_alpha()
+        pygame.transform.smoothscale(self._spritesheet, (self._spritesheet_scale_to_width, self._spritesheet_scale_to_height))
 
     def _next_frameindex(self, frame_count):
         """
