@@ -1,6 +1,7 @@
 import pygame
 import vector
 from pygame.locals import *
+
 # returns all actors in a given group that collided with the given actor
 # each actor is mapped to the point of collision
 def checkCollisionAgainstGroup(actor, group):

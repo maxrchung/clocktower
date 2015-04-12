@@ -13,7 +13,6 @@ class PlayerActor(actor.Actor):
         self.orientation = "right"
         # create an input manager
         self.input = InputManager.InputManager()
-        self.staticColliders = pygame.sprite.Group()
         
     def update(self):
         # update the input manager
