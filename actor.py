@@ -44,3 +44,8 @@ class Actor(pygame.sprite.Sprite):
     def moveActor(self, x, y):
         self.pos += vector.Vector(x, y)
         self.rect.move_ip(x, -1*y)
+
+    def updateAnimation(self, actor_state):
+        self.animator.update_frame(actor_state)
+        self.image = self.animator.get_current_frame()
+        self.mask = self.animator.get_current_mask()
