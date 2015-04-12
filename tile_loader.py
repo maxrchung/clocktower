@@ -2,14 +2,15 @@ import pygame
 import sprites
 import actor
 import gearActor
+import os
 
-Spirtes = Sprites.sprites
+Spirtes = pygame.sprite.Sprite
 class Level:
 	def __init__(self, screen, tiles, sprites):
 		"""Initializes a game window, and a tile matrix"""
 		self.window = screen
 		self.matrix = tiles
-		self.spritelist = sprites
+		self.spritelist = pygame.spritelist
 
 	def parser(self):
 		#Sprite List

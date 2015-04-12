@@ -2,7 +2,7 @@ import pygame
 import actor
 import gearActor
 import tile_loader
-
+import os
 
 v_gear = pygame.image.load(os.path.join('Art','verticalGear1.png'))
 v_gear_med = pygame.image.load(os.path.join('Art', 'verticalGear2.png'))
@@ -14,14 +14,9 @@ background = pygame.image.load(os.path.join('Art', 'background.png'))
 #Sprite List
 #Start_tile = 0
 #End_tile = 1
-#v_gear1by1 = 2
-#v_gear_med2by2 = 3
-#v_gear_big3by3 = 4
-#background = 5
+#v_gear1by1 = 3
+#v_gear_med2by2 = 4
+#v_gear_big3by3 = 5
+#background = 2
 
 SpriteList = [start_tile, end_tile, background, v_gear, v_gear_med, v_gear_big]
-
-class Gear_Sprites(pygame.sprite.Sprite):
-	def __init__(self, x, y, matrix):
-		self.SpriteList = []
-
