@@ -13,6 +13,7 @@ class PlayerActor(actor.Actor):
         self.curr_orientation = "Right"
         # create an input manager
         self.input = InputManager.InputManager()
+        self.timer = 0
         
     def update(self):
         # update the input manager
@@ -58,25 +59,31 @@ class PlayerActor(actor.Actor):
                 self.accels.pop('jump')
                 self.targetVelocities.pop('jump')
 
-    def _tinyTimer(self, count):
-        timer = 0
-        for i in range(100):
-            timer += 1
+
 
     def checkAnimation(self):
         if self.curr_orientation != self.prev_orientation: # case: Turned
-            for i in range(7):
-                self._tinyTimer(50)
-                self.updateAnimation("turnTo" + self.curr_orientation)
+            self.turning = 0
 
-        self._tinyTimer(100)
+        if self.timer == 5:
+            if self.turning != -1:
+                if self.turning == 7:
+                    self.turning = -1
+                else:
+                    self.updateAnimation("turnTo" + self.curr_orientation)
+            else:
+                actor_state = ""
+                if self.currState == "IDLE":
+                    actor_state = "idle" + self.curr_orientation
+                else:
+                    actor_state = "move" + self.curr_orientation
+                self.updateAnimation(actor_state)
+            self.timer = 0
 
-        actor_state = ""
-        if self.currState == "IDLE":
-            actor_state = "idle" + self.curr_orientation
         else:
-            actor_state = "move" + self.curr_orientation
-        self.updateAnimation(actor_state)
+            self.timer += 1
+
+
 
 
 
