@@ -10,7 +10,7 @@ class InputManager:
         self.SPACE_DOWN = False
 
     def update(self):
-        # Use this for holding down keys
+        # Use get_pressed() for holding down keys
         keys = pygame.key.get_pressed()
         self.L_DOWN = keys[K_LEFT]
         self.R_DOWN = keys[K_RIGHT]
