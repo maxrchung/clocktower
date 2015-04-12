@@ -2,8 +2,10 @@ import pygame
 import os
 import actor
 import playerActor
+import gearActor
 import vector
 import physicsManager
+import animation
 from pygame.locals import *
  
 class App:
@@ -15,8 +17,8 @@ class App:
         self.clock = pygame.time.Clock()
         # Keep a group of renderable actors
         self.renderables = pygame.sprite.LayeredUpdates()
-        # Keep a group of static colliders
-        self.staticColliders = pygame.sprite.Group()
+        # Keep a group of gear colliders
+        self.gears = pygame.sprite.Group()
         # Temporary background
         self.background = pygame.Surface((480, 640))
         self.background.fill((0, 0, 0))
@@ -28,8 +30,17 @@ class App:
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
-        self.actors = [playerActor.PlayerActor(vector.Vector(0, 0), os.path.join('Art', 'idleLeft.png'), (self.renderables)),
-                       actor.Actor(vector.Vector(0, 500), os.path.join('Art', 'idleRight.png'), False, (self.renderables, self.staticColliders))]
+        playerInfo = {"IDLE" : (0, 4)}
+        playerAnimation = animation.Animation(os.path.join('Art', 'idleRight.png'), pygame.Rect(0, 0, 96, 144), playerInfo)
+        playerAnimation.update_frame("IDLE")
+        self.playerA = playerActor.PlayerActor(vector.Vector(0,0), playerAnimation, (self.renderables))
+        
+        gearInfo = {"DUMMY" : (0, 1)}
+        gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
+        gearAnimation.update_frame("DUMMY")
+        gearA = gearActor.GearActor(vector.Vector(0, 500), gearAnimation, False, (self.renderables, self.gears))
+
+        self.actors = (self.playerA, gearA)
  
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -38,15 +49,18 @@ class App:
         # update at 60 fps
         self.clock.tick(60)
         # update inputs
-        self.actors[0].update()
+        self.playerA.update()
+        # spin gears
+        #for gear in self.gears.sprites():
+            #gear.rotateGear()
         # update physics for each actor in the game
         for a in self.actors:
             a.updatePhysics(self.clock.get_time())
-        # check for collisions with player against static group
-        collisionList = physicsManager.checkCollisionAgainstGroup(self.actors[0], self.staticColliders)
+        # check for collisions with player against gears group
+        collisionList = physicsManager.checkCollisionAgainstGroup(self.playerA, self.gears)
         # if there were collisions with player, resolve intersections
         for collider in collisionList.keys():
-            physicsManager.resolveIntersection(self.actors[0], collider)
+            physicsManager.resolveIntersection(self.playerA, collider)
     def on_render(self):
         # Draw everything in the LayeredUpdates group
         dirty = self.renderables.draw(self._display_surf)

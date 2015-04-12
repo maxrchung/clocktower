@@ -1,21 +1,23 @@
 import pygame
 import vector
+import animation
 from pygame.locals import *
 class Actor(pygame.sprite.Sprite):
-    def __init__(self, pos, spritePath, useGravity, groups):
+    def __init__(self, pos, animation, useGravity, groups):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         # Set a position for the Actor
         self.pos = pos
-        # Set the sprite with the given image path. Make a mask as well
-        # for collision detection
-        self.image = pygame.image.load(spritePath).convert_alpha()
+        # Assign animator and get initial image and mask
+        # from the animator
+        self.animator = animation
+        self.image = animation.get_current_frame()
         self.rect = self.image.get_rect()
         self.rect.move_ip(pos.x, pos.y)
-        self.mask = pygame.mask.from_surface(self.image)
+        self.mask = animation.get_current_mask()
+
         # use pygame.sprite.collide_mask()
         # usage: collide_mask(SpriteLeft, SpriteRight) -> point
-        
         # Set some default forces and velocity
         self.accels = {}
         self.targetVelocities = {}
