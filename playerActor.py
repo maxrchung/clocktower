@@ -22,26 +22,21 @@ class PlayerActor(actor.Actor):
     def checkInputs(self):
         
         oldstate = str(self.currState)
-        # left
         if self.input.L_DOWN:
             self.orientation = "left"
-            # left jump
             if self.input.SPACE_DOWN:
                 self.currState = "JUMP_LEFT"
             else:
                 self.currState = "MOVE_LEFT"
-        # right
         elif self.input.R_DOWN:
             self.orientation = "right"
-            # right jump
             if self.input.SPACE_DOWN:
                 self.currState = "JUMP_RIGHT"
             else:
-                self.currState = "MOVE_LEFT"
-        # stationary jump
+                self.currState = "MOVE_RIGHT"
         elif self.input.SPACE_DOWN:
             self.currState = "JUMP_NEUTRAL"
         else:
             self.currState = "IDLE"
-            print(self.currState)
+        print(self.currState)
             
