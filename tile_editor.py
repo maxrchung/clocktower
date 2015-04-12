@@ -2,8 +2,6 @@ import pygame
 import os
 import tile_matrix
 import easygui
-from pygame import gfxdraw
-
 # Module Documentation
 # Pygame - Main display engine
 # os - Used to load images
@@ -19,14 +17,14 @@ V_BOXES = 15
 H_BOXES = 11
 BOX_SIZE = 48
 
-v_gear = pygame.image.load(os.path.join('Art','tile_v_gear1by1.png'))
-v_gear_med = pygame.image.load(os.path.join('Art', 'tile_v_gear3by3.png'))
-v_gear_big = pygame.image.load(os.path.join('Art', 'tile_v_gear5by5.png'))
-h_gear = pygame.image.load(os.path.join('Art', 'tile_h_gear1by1.png'))
-h_gear_med = pygame.image.load(os.path.join('Art', 'tile_h_gear1by3.png'))
-h_gear_big = pygame.image.load(os.path.join('Art', 'tile_h_gear1by5.png'))
-start_tile = pygame.image.load(os.path.join('Art', 'tile_start1by1.png'))
-end_tile = pygame.image.load(os.path.join('Art', 'tile_end1by1.png'))
+v_gear = pygame.image.load(os.path.join('Art','verticalGear1.png'))
+v_gear2 = pygame.image.load(os.path.join('Art','tile_v_gear1by1counter.png'))
+v_gear_med = pygame.image.load(os.path.join('Art', 'verticalGear2.png'))
+v_gear_med2 = pygame.image.load(os.path.join('Art', 'tile_v_gear2by2counter.png'))
+v_gear_big = pygame.image.load(os.path.join('Art', 'verticalGear3.png'))
+v_gear_big2 = pygame.image.load(os.path.join('Art', 'tile_v_gear3by3counter.png'))
+start_tile = pygame.image.load(os.path.join('Art', 'ladderBottom.png'))
+end_tile = pygame.image.load(os.path.join('Art', 'ladderTop.png'))
 side_bar = pygame.image.load(os.path.join('Art', 'side_bar.png'))
 background = pygame.image.load(os.path.join('Art', 'foreground.png'))
 
@@ -37,8 +35,6 @@ background_window.blit(background, backgroundRect)
 main_window.blit(side_bar, pygame.Rect(SCREEN_X_NS, 0 , 200, SCREEN_Y))
 
 tm = tile_matrix.Tile_Matrix(H_BOXES, V_BOXES)
-tm.change_matrix(0, 5, "F")
-tm.change_matrix(1, 5, "F")
 pygame.display.update()
 black = pygame.Color(0,0,0)
 
@@ -52,14 +48,15 @@ def draw_grid(surface):
   		pygame.draw.line(surface, pygame.Color(255,255,255,255),(0,i*BOX_SIZE),(SCREEN_X_NS,i*BOX_SIZE))
   	pygame.display.update()
 
-def draw_matrix(surface, matrix):
-	"""Draws an opened matrix(level)"""
-	for row in matrix:
-		for col in row:
-			if col == 
+# def draw_matrix(surface, matrix):
+# 	"""Draws an opened matrix(level)"""
+# 	for row in matrix:
+# 		for col in row:
+# 			if col == 
 
 draw_grid(main_window)
 current_mode = "Q" 
+direction = "LEFT"
 
 # Current Mode Guide
 # Q = Standard v_gear
@@ -70,6 +67,9 @@ current_mode = "Q"
 # S = Medium h_gear_med
 # D = Big h_gear_med
 # F = Victory end_tile
+# Direction Guide
+# If LEFT, gears are going Counter Clockwise <-
+# If RIGHT, gears are going Clockwise ->
 
 while(is_running):
     #get mouse click
@@ -78,7 +78,15 @@ while(is_running):
     #change matrix accordingly
     for event in pygame.event.get():
         if event.type == pygame.KEYUP:
-            if event.key == pygame.K_q:
+            if event.key == pygame.K_LSHIFT:
+                direction = "LEFT"
+                print("Direction: Counter Clockwise")
+                print(current_mode)
+            elif event.key == pygame.K_RSHIFT:
+                direction = "RIGHT"
+                print("Direction: Clockwise")
+                print(current_mode)
+            elif event.key == pygame.K_q:
                 current_mode = "Q"
                 print(current_mode)
             elif event.key == pygame.K_w:
@@ -135,28 +143,45 @@ while(is_running):
                 start_y = box_y * BOX_SIZE
 
             	print(box_x,BOX_SIZE,box_y,BOX_SIZE)
-                tm.change_matrix(box_y, box_x, current_mode)
+            	if direction == "LEFT":
+                	tm.change_matrix(box_y, box_x, current_mode.lower())
+                else:
+                	tm.change_matrix(box_y, box_x, current_mode)
                 print(box_x + 1, box_y+1)
                 if current_mode == "Q":
-                    main_window.blit(v_gear,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                if current_mode == "W":
-                   main_window.blit(v_gear_med,pygame.Rect(start_x-48, start_y-48, BOX_SIZE, BOX_SIZE))
-                if current_mode == "E":
-                   main_window.blit(v_gear_big,pygame.Rect(start_x-92, start_y-92, BOX_SIZE, BOX_SIZE))
-                if current_mode == "R":
-                    main_window.blit(start_tile,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                if current_mode == "A":
-                   main_window.blit(h_gear,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                if current_mode == "S":
-                   main_window.blit(h_gear_med,pygame.Rect(start_x-48, start_y, BOX_SIZE, BOX_SIZE))                    
-                if current_mode == "D":
-                   main_window.blit(h_gear_big,pygame.Rect(start_x-92, start_y, BOX_SIZE, BOX_SIZE))
-                if current_mode == "F":
-                   main_window.blit(end_tile,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                if current_mode == "X":
+                	if direction == "LEFT":
+                		main_window.blit(v_gear2,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
+                	else:
+                		main_window.blit(v_gear,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
+                elif current_mode == "W":
+                	if direction == "LEFT":
+                		main_window.blit(v_gear_med2,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
+                	else:
+                		main_window.blit(v_gear_med,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
+                elif current_mode == "E":
+                	if direction == "LEFT":
+                		main_window.blit(v_gear_big2,pygame.Rect(start_x-48, start_y-48, BOX_SIZE, BOX_SIZE))
+                	else:
+                		main_window.blit(v_gear_big,pygame.Rect(start_x-48, start_y-48, BOX_SIZE, BOX_SIZE))
+                elif current_mode == "R":
+                    main_window.blit(start_tile,pygame.Rect(start_x, start_y-48, BOX_SIZE, BOX_SIZE))
+      #           elif current_mode == "S":
+      #           	if direction == "LEFT":
+						# main_window.blit(h_gear_med2,pygame.Rect(start_x-48, start_y, BOX_SIZE, BOX_SIZE))
+      #           	else:
+						# main_window.blit(h_gear_med,pygame.Rect(start_x-48, start_y, BOX_SIZE, BOX_SIZE))
+      #           elif current_mode == "D":
+      #              	if direction == "LEFT":
+      #              		main_window.blit(h_gear_big2,pygame.Rect(start_x-92, start_y, BOX_SIZE, BOX_SIZE))
+      #              	else:
+      #              		main_window.blit(h_gear_big,pygame.Rect(start_x-92, start_y, BOX_SIZE, BOX_SIZE))
+                elif current_mode == "F":
+                   	main_window.blit(end_tile,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
+                elif current_mode == "X":
                     color = pygame.Color(0,0,0,0)
                     pygame.draw.rect(main_window,color,(start_x,start_y,BOX_SIZE,BOX_SIZE))
 
 
                 draw_grid(main_window)
+                main_window.convert()
                 pygame.display.update()

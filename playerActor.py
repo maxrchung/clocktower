@@ -46,14 +46,22 @@ class PlayerActor(actor.Actor):
 
     def checkState(self):
         if self.currState == "MOVE_LEFT":
-            self.accels['move'] = -4.0
-            self.targetVelocities['move'] = actor.vector.Vector(-12.0, 0.0)
+            self.accels['move'] = 4.0
+            self.targetVelocities['move'] = actor.vector.Vector(-12.0, None)
         elif self.currState == "MOVE_RIGHT":
-            self.accels['move'] = -4.0
-            self.targetVelocities['move'] = actor.vector.Vector(12.0, 0.0)
+            self.accels['move'] = 4.0
+            self.targetVelocities['move'] = actor.vector.Vector(12.0, None)
         elif self.currState == "JUMP_NEUTRAL":
+<<<<<<< HEAD
             self.accels['jump'] = 4.0
             self.targetVelocities['jump'] = actor.vector.Vector(0.0, 12.0)
+=======
+            self.accels['jump'] = 20.0
+            self.targetVelocities['jump'] = actor.vector.Vector(None, 24.0)
+>>>>>>> 3a1543ae49c373d93a847d60690e90b768435e93
         elif self.currState == "IDLE":
             self.accels['move'] = 0.0
             self.targetVelocities['move'] = actor.vector.Vector(0.0, 0.0)
+            if 'jump' in self.accels:
+                self.accels.pop('jump')
+                self.targetVelocities.pop('jump')            

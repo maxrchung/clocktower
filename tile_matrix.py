@@ -30,19 +30,8 @@ class Tile_Matrix:
 			self.matrix.append(fill_row(rows))
 
 	def change_matrix(self, row, col, element):
-		try:
-			if element == "W":
-				fill_section(self.matrix, row, col, 2,2, element)
-			elif element == "E":
-				fill_section(self.matrix, row, col, 3,3, element)
-			elif element == "S":
-				fill_section(self.matrix, row, col, 1,2, element)
-			elif element == "D":
-				fill_section(self.matrix, row, col, 1,3, element)
-			else:
-				self.matrix[row][col] = element
-		except IndexError:
-			pass
+		self.matrix[row][col] = element
+
 
 	def save(self):
 		file_name = easygui.filesavebox('.txt','Save File as', '.txt')

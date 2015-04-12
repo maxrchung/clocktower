@@ -3,7 +3,14 @@ class Vector():
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.mag = math.sqrt(self.x*self.x + self.y*self.y)
+        if x == None and y == None:
+            self.mag = None
+        elif x == None:
+            self.mag = x
+        elif y == None:
+            self.mag = y
+        else:
+            self.mag = math.sqrt(self.x*self.x + self.y*self.y)
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y
@@ -42,17 +49,22 @@ class Vector():
             return Vector(self.x/self.mag, self.y/self.mag)
         return Vector(0.0, 0.0)
     def moveTowards(self, target, increment):
+        temp = Vector(target.x, target.y)
+        if temp.x == None:
+            temp.x = self.x
+        if temp.y == None:
+            temp.y = self.y
         # get raw difference
-        diff_norm = (target - self).get_norm()
+        diff_norm = (temp - self).get_norm()
         # add scaled increment
         self += diff_norm*increment
         # if the new difference's normal is not equal to the
         # original difference's normal, then we have overshot
-        testDiff_norm = (target - self).get_norm()
+        testDiff_norm = (temp - self).get_norm()
         # RED FLAG: SET THINGS EQUAL BY VALUE, NOT BY REFERENCE
         if diff_norm != testDiff_norm:
-            self.x = target.x
-            self.y = target.y
+            self.x = temp.x
+            self.y = temp.y
         
         return self
     def reverse(self):
