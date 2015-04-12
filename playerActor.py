@@ -5,12 +5,12 @@ import physicsManager
 from pygame.locals import *
  
 class PlayerActor(actor.Actor):
-    def __init__(self, pos, spritePath, groups):
+    def __init__(self, pos, animation, groups):
         # Call the parent class (Actor) constructor
-        actor.Actor.__init__(self, pos, spritePath, True, groups)
-        # TODO: add animator
+        actor.Actor.__init__(self, pos, animation, True, groups)
         self.currState = "IDLE"
-        self.orientation = "right"
+        self.prev_orientation = "right"
+        self.curr_orientation = "right"
         # create an input manager
         self.input = InputManager.InputManager()
         
@@ -20,17 +20,18 @@ class PlayerActor(actor.Actor):
         # do state transitions as needed
         self.checkInputs()
         self.checkState()
+        self.checkAnimation()
 
     def checkInputs(self):
         oldstate = str(self.currState)
         if self.input.L_DOWN:
-            self.orientation = "left"
+            self.prev_orientation, self.curr_orientation = self.curr_orientation, "left"
             if self.input.SPACE_DOWN:
                 self.currState = "JUMP_LEFT"
             else:
                 self.currState = "MOVE_LEFT"
         elif self.input.R_DOWN:
-            self.orientation = "right"
+            self.prev_orientation, self.curr_orientation = self.curr_orientation, "right"
             if self.input.SPACE_DOWN:
                 self.currState = "JUMP_RIGHT"
             else:
@@ -56,3 +57,18 @@ class PlayerActor(actor.Actor):
             if 'jump' in self.accels:
                 self.accels.pop('jump')
                 self.targetVelocities.pop('jump')            
+
+    def checkAnimation(self):
+        if self.curr_orientation != self.prev_orientation: # case: Turned
+            if self.curr_orientation == "left":
+                for i in range(7):
+                    self.updateAnimation("turnToLeft")
+                # TODO: finish these stubs; currenly only has logical switches
+                self.updateAnimation("idleLeft")
+            else:
+                for i in range(7):
+                    self.animator.update_frame("turnToRight")
+                self.updateAnimation("idleRight")
+
+
+
