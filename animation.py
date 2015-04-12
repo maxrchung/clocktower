@@ -63,7 +63,7 @@ class Animation:
             masks.append(pygame.mask.from_surface(frames[col_number]))
         """
 
-        self._states[state_name] = (frame_count, frames, masks)
+        self._states[state_name] = (frame_count, frames, masks) #####
         return
 
     def _load_image(self, spritesheet_path):
@@ -85,7 +85,7 @@ class Animation:
         :return: None, just updates the things internally
         """
         if self._current_state == actor_state:  # same state as before
-            self._current_frameindex = self._next_frameindex()
+            self._current_frameindex = self._next_frameindex(self._states[self._current_state][0])
 
         else:                                   # new state, gotta update
             self._current_state = actor_state
