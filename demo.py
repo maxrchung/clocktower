@@ -62,6 +62,8 @@ class App:
             a.updatePhysics(self.clock.get_time())
         # check for collisions with player against gears group
         collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
+        if collisionList:
+            self.player.jumping = False
         # if there were collisions with player, resolve intersections
         for collider, point in collisionList.items():
             physicsManager.resolveIntersection(self.player, collider)
