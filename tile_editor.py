@@ -17,20 +17,14 @@ V_BOXES = 15
 H_BOXES = 11
 BOX_SIZE = 48
 
-v_gear = pygame.image.load(os.path.join('Art','tile_v_gear1by1.png'))
+v_gear = pygame.image.load(os.path.join('Art','verticalGear1.png'))
 v_gear2 = pygame.image.load(os.path.join('Art','tile_v_gear1by1counter.png'))
-v_gear_med = pygame.image.load(os.path.join('Art', 'tile_v_gear2by2.png'))
+v_gear_med = pygame.image.load(os.path.join('Art', 'verticalGear2.png'))
 v_gear_med2 = pygame.image.load(os.path.join('Art', 'tile_v_gear2by2counter.png'))
-v_gear_big = pygame.image.load(os.path.join('Art', 'tile_v_gear3by3.png'))
+v_gear_big = pygame.image.load(os.path.join('Art', 'verticalGear3.png'))
 v_gear_big2 = pygame.image.load(os.path.join('Art', 'tile_v_gear3by3counter.png'))
-h_gear = pygame.image.load(os.path.join('Art', 'tile_h_gear1by1.png'))
-h_gear2 = pygame.image.load(os.path.join('Art', 'tile_h_gear1by1counter.png'))
-h_gear_med = pygame.image.load(os.path.join('Art', 'tile_h_gear1by3.png'))
-h_gear_med2 = pygame.image.load(os.path.join('Art', 'tile_h_gear1by3counter.png'))
-h_gear_big = pygame.image.load(os.path.join('Art', 'tile_h_gear1by5.png'))
-h_gear_big2 = pygame.image.load(os.path.join('Art', 'tile_h_gear1by5counter.png'))
-start_tile = pygame.image.load(os.path.join('Art', 'tile_start1by2.png'))
-end_tile = pygame.image.load(os.path.join('Art', 'tile_end1by2.png'))
+start_tile = pygame.image.load(os.path.join('Art', 'ladderBottom.png'))
+end_tile = pygame.image.load(os.path.join('Art', 'ladderTop.png'))
 side_bar = pygame.image.load(os.path.join('Art', 'side_bar.png'))
 background = pygame.image.load(os.path.join('Art', 'foreground.png'))
 
@@ -168,7 +162,7 @@ while(is_running):
                 	if direction == "LEFT":
                 		main_window.blit(v_gear_big2,pygame.Rect(start_x-48, start_y-48, BOX_SIZE, BOX_SIZE))
                 	else:
-                		main_window.blit(v_gear_big,pygame.Rect(start_x-48, start_y-96, BOX_SIZE, BOX_SIZE))
+                		main_window.blit(v_gear_big,pygame.Rect(start_x-48, start_y-48, BOX_SIZE, BOX_SIZE))
                 elif current_mode == "R":
                     main_window.blit(start_tile,pygame.Rect(start_x, start_y-48, BOX_SIZE, BOX_SIZE))
                 elif current_mode == "A":
