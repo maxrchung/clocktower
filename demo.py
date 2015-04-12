@@ -35,9 +35,9 @@ class App:
         playerAnimation.update_frame("IDLE")
         self.playerA = playerActor.PlayerActor(vector.Vector(0,0), playerAnimation, (self.renderables))
         
-        gearInfo = {"DUMMY" : (0, 1)}
+        gearInfo = {"SINGLEFRAME" : (0, 1)}
         gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
-        gearAnimation.update_frame("DUMMY")
+        gearAnimation.update_frame("SINGLEFRAME")
         gearA = gearActor.GearActor(vector.Vector(0, 500), gearAnimation, False, (self.renderables, self.gears))
 
         self.actors = (self.playerA, gearA)
@@ -50,6 +50,7 @@ class App:
         self.clock.tick(60)
         # update inputs
         self.playerA.update()
+        print(self.playerA.velocity)
         # spin gears
         for gear in self.gears.sprites():
             gear.rotateGear()
