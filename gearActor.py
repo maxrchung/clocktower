@@ -21,7 +21,6 @@ class GearActor(actor.Actor):
             self.tear = pygame.image.load(os.path.join('Art', 'verticalGear3Tear.png')).convert_alpha()
 
     def rotateGear(self):
-        return
         OFFSET = -3
         if not self.clockwise:
             OFFSET *= -1
