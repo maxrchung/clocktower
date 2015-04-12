@@ -12,10 +12,10 @@ class GearActor(actor.Actor):
         self.timer = 0
 
     def rotateGear(self):
-        OFFSET = -10
+        OFFSET = -3
         if not self.clockwise:
             OFFSET *= -1
-        if self.timer == 5:
+        if self.timer == 1:
             self.timer = 0
             if self.current_angle < 360:
                 orig_rect = self.rect
