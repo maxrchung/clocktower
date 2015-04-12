@@ -38,8 +38,8 @@ class Animation:
         rects = []
 
         for col_number in range(frame_count):
-            rects.append(pygame.Rect(self._rectangle.x*col_number, row_number,
-                                     self._rectangle.x*(col_number+1), row_number+1))
+            rects.append(pygame.Rect(self._rectangle.x*col_number, self._rectangle.y*row_number,
+                                     self._rectangle.x*(col_number+1), self._rectangle.y*(row_number+1)))
 
             frames.append(self._frame_at(rects[col_number]))
             masks.append(pygame.mask.from_surface(frames[col_number]))
