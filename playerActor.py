@@ -14,6 +14,7 @@ class PlayerActor(actor.Actor):
         # create an input manager
         self.input = InputManager.InputManager()
         self.timer = 0
+        self.turning = -1
         
     def update(self):
         # update the input manager
