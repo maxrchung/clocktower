@@ -30,18 +30,24 @@ class App:
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
-        playerInfo = {"IDLE" : (0, 4)}
+        #playerInfo = {"IDLE" : (0, 4)}
         #playerAnimation = animation.Animation(os.path.join('Art', 'idleRight.png'), pygame.Rect(0, 0, 96, 144), playerInfo)
         #playerAnimation.update_frame("IDLE")
 
-        #=========
+        # load all sprites
 
-        #self.playerA = playerActor.PlayerActor(vector.Vector(0,0), playerAnimation, (self.renderables))
+        self.load_player_sprites()
+        self.load_death_sprites()
+        self.load_gear_sprites()
+
+        self.playerAnimation.update_frame("idleLeft")
+
+        self.playerA = playerActor.PlayerActor(vector.Vector(0,0), self.playerAnimation, (self.renderables))
         
-        gearInfo = {"SINGLEFRAME" : (0, 1)}
-        gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
-        gearAnimation.update_frame("SINGLEFRAME")
-        gearA = gearActor.GearActor(vector.Vector(0, 500), gearAnimation, False, (self.renderables, self.gears))
+        #gearInfo = {"SINGLEFRAME" : (0, 1)}
+        #gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
+
+        gearA = gearActor.GearActor(vector.Vector(0, 500), self.sVertGearAnimation, False, (self.renderables, self.gears))
 
         self.actors = (self.playerA, gearA)
  
@@ -109,6 +115,9 @@ class App:
                                                     info_dic)
 
     def load_gear_sprites(self):
+        """
+        :return: void, function creates the animations for all gears and automatically puts them in the ONLY state
+        """
         GEARSIZE1 = pygame.Rect(0, 0, 48, 48)
         GEARSIZE2 = pygame.Rect(0, 0, 96, 96)
         GEARSIZE3 = pygame.Rect(0, 0, 144, 144)
@@ -125,6 +134,9 @@ class App:
         self.lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear3'),
                                                         GEARSIZE3,
                                                         info_dic3)
+        self.sVertGearAnimation.update_frame("sVertGear")
+        self.mVertGearAnimation.update_frame("mVertGear")
+        self.lVertGearAnimation.update_frame("lVertGear")
 
 
 
