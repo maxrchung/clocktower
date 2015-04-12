@@ -12,7 +12,7 @@ class App:
     def __init__(self):
         self._running = True
         self._display_surf = None
-        self.size = self.weight, self.height = 480, 640
+        self.size = self.weight, self.height = 720,720
         # Need a clock to scale physics vectors
         self.clock = pygame.time.Clock()
         # Keep a group of renderable actors
@@ -38,6 +38,8 @@ class App:
         #gearInfo = {"SINGLEFRAME" : (0, 1)}
         #gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
         self.background = pygame.image.load(os.path.join('Art', 'background.png')).convert_alpha()
+        self.clockTowerTear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
+        self.clockTower = pygame.image.load(os.path.join('Art', 'clockTower.png')).convert_alpha()
         
         self.player = self.get_player_actor(0, 0, -30)
         gearA = self.get_sVertGearActor(0, 500, False)
@@ -75,9 +77,15 @@ class App:
         #pygame.display.update(dirty)
         # Clear the previously rendered stuff
         #self.renderables.clear(self._display_surf, self.background)
+        
         self._display_surf.blit(self.background, (0,0))
+        self._display_surf.blit(self.clockTowerTear, (720-247, 0))
+        self._display_surf.blit(self.clockTower, (528, 0))
+
         for a in self.actors:
             self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
+            a.draw()
+
         pygame.display.update()
    
     def on_cleanup(self):
