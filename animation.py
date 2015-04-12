@@ -29,16 +29,28 @@ class Animation:
         frame.blit(self._spritesheet, (0, 0), rect)
         return frame
 
-    def _frames_at(self, rectangles):
-        return [self._frame_at(rectangle) for rectangle in rectangles]
+#    def _frames_at(self, rectangles):
+#        return [self._frame_at(rectangle) for rectangle in rectangles]
 
     def _create_state(self, state_name, row_number, frame_count):
         frames = []
         masks = []
+        rects = []
+
         for col_number in range(frame_count):
-            print(col_number)
-            frames.append(pygame.Rect( self._rectangle.x*col_number, row_number, self._rectangle.x*(col_number+1), row_number+1 ))
+            rects.append(pygame.Rect(self._rectangle.x*col_number, self._rectangle.y*row_number,
+                                     self._rectangle.x*(col_number+1), self._rectangle.y*(row_number+1)))
+
+            frames.append(self._frame_at(rects[col_number]))
             masks.append(pygame.mask.from_surface(frames[col_number]))
+
+        """
+        for col_number in range(frame_count):
+            #print(col_number)
+            frames = self._frames_at( [] )
+            #frames.append(pygame.Rect( self._rectangle.x*col_number, row_number, self._rectangle.x*(col_number+1), row_number+1 ))
+            masks.append(pygame.mask.from_surface(frames[col_number]))
+        """
 
         self._states[state_name] = (frame_count, frames, masks)
         return
