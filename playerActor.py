@@ -72,6 +72,7 @@ class PlayerActor(actor.Actor):
                     self.turning = -1
                 else:
                     self.updateAnimation("turnTo" + self.curr_orientation)
+                    self.turning += 1
             else:
                 actor_state = ""
                 if self.currState == "IDLE":
