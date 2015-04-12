@@ -51,8 +51,8 @@ class App:
         # update inputs
         self.playerA.update()
         # spin gears
-        #for gear in self.gears.sprites():
-            #gear.rotateGear()
+        for gear in self.gears.sprites():
+            gear.rotateGear()
         # update physics for each actor in the game
         for a in self.actors:
             a.updatePhysics(self.clock.get_time())
