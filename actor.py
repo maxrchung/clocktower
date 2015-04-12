@@ -25,6 +25,9 @@ class Actor(pygame.sprite.Sprite):
         if useGravity:
             self.accels['gravity'] = 4.0
             self.targetVelocities['gravity'] = vector.Vector(None, -12.0)
+
+        # Will be specified by the inherited classes
+        self.tear = None
         
         # Add sprite into the specified groups. 
         self.add(groups);

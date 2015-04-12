@@ -96,6 +96,8 @@ class App:
         self._display_surf.blit(self.clocktowertear,(720-247,0))
         self._display_surf.blit(self.clocktower,(528,0))
         for a in self.actors:
+            if a.tear:
+                self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
             self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
         pygame.display.update()
    
@@ -209,7 +211,7 @@ class App:
                                                         GEARSIZE3,
                                                         info_dic3)
         lVertGearAnimation.update_frame("lVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, (self.renderables, self.gears))
+        return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, (self.renderables, self.gears), id="LARGE")
 
     def get_mVertGearActor(self, x, y, clockwise):
         """
@@ -221,7 +223,7 @@ class App:
                                                         GEARSIZE2,
                                                         info_dic2)
         mVertGearAnimation.update_frame("mVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), mVertGearAnimation, clockwise, (self.renderables, self.gears))
+        return gearActor.GearActor(vector.Vector(x, y), mVertGearAnimation, clockwise, (self.renderables, self.gears), id="MEDIUM")
 
     def get_sVertGearActor(self, x, y, clockwise):
         """
@@ -233,7 +235,7 @@ class App:
                                                         GEARSIZE1,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), sVertGearAnimation, clockwise, (self.renderables, self.gears))
+        return gearActor.GearActor(vector.Vector(x, y), sVertGearAnimation, clockwise, (self.renderables, self.gears), id="SMALL")
 
 
 
