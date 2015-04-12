@@ -68,7 +68,7 @@ class PlayerActor(actor.Actor):
 
         if self.timer == 5:
             if self.turning != -1:
-                if self.turning == 7:
+                if self.turning == 6:
                     self.turning = -1
                 else:
                     self.updateAnimation("turnTo" + self.curr_orientation)
