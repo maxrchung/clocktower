@@ -165,21 +165,16 @@ while(is_running):
                 		main_window.blit(v_gear_big,pygame.Rect(start_x-48, start_y-48, BOX_SIZE, BOX_SIZE))
                 elif current_mode == "R":
                     main_window.blit(start_tile,pygame.Rect(start_x, start_y-48, BOX_SIZE, BOX_SIZE))
-                elif current_mode == "A":
-                	if direction == "LEFT":
-                		main_window.blit(h_gear2,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                	else:
-                		main_window.blit(h_gear,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
-                elif current_mode == "S":
-                	if direction == "LEFT":
-						main_window.blit(h_gear_med2,pygame.Rect(start_x-48, start_y, BOX_SIZE, BOX_SIZE))
-                	else:
-						main_window.blit(h_gear_med,pygame.Rect(start_x-48, start_y, BOX_SIZE, BOX_SIZE))
-                elif current_mode == "D":
-                   	if direction == "LEFT":
-                   		main_window.blit(h_gear_big2,pygame.Rect(start_x-92, start_y, BOX_SIZE, BOX_SIZE))
-                   	else:
-                   		main_window.blit(h_gear_big,pygame.Rect(start_x-92, start_y, BOX_SIZE, BOX_SIZE))
+      #           elif current_mode == "S":
+      #           	if direction == "LEFT":
+						# main_window.blit(h_gear_med2,pygame.Rect(start_x-48, start_y, BOX_SIZE, BOX_SIZE))
+      #           	else:
+						# main_window.blit(h_gear_med,pygame.Rect(start_x-48, start_y, BOX_SIZE, BOX_SIZE))
+      #           elif current_mode == "D":
+      #              	if direction == "LEFT":
+      #              		main_window.blit(h_gear_big2,pygame.Rect(start_x-92, start_y, BOX_SIZE, BOX_SIZE))
+      #              	else:
+      #              		main_window.blit(h_gear_big,pygame.Rect(start_x-92, start_y, BOX_SIZE, BOX_SIZE))
                 elif current_mode == "F":
                    	main_window.blit(end_tile,pygame.Rect(start_x, start_y, BOX_SIZE, BOX_SIZE))
                 elif current_mode == "X":
@@ -188,4 +183,5 @@ while(is_running):
 
 
                 draw_grid(main_window)
+                main_window.convert()
                 pygame.display.update()
