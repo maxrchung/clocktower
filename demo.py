@@ -19,9 +19,6 @@ class App:
         self.renderables = pygame.sprite.LayeredUpdates()
         # Keep a group of gear colliders
         self.gears = pygame.sprite.Group()
-        # Temporary background
-        self.background = pygame.Surface((480, 640))
-        self.background.fill((0, 0, 0))
  
     def on_init(self):
         pygame.init()
@@ -40,11 +37,14 @@ class App:
         #self.playerAnimation.update_frame("idleLeft")
         #gearInfo = {"SINGLEFRAME" : (0, 1)}
         #gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
-
-        self.player = self.get_player_actor(0, 0, -20)
-        gearA = self.get_sVertGearActor(0, 500, False)
+        self.background = pygame.image.load(os.path.join('Art', 'background.png')).convert_alpha()
         
-        self.actors = (self.player, gearA)
+        self.player = self.get_player_actor(0, 0, -30)
+        gearA = self.get_sVertGearActor(0, 500, False)
+        gearB = self.get_mVertGearActor(100, 400, True)
+        gearC = self.get_lVertGearActor(200, 300, False)
+        
+        self.actors = (gearA, gearB, gearC, self.player)
  
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -63,16 +63,20 @@ class App:
         # check for collisions with player against gears group
         collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
         # if there were collisions with player, resolve intersections
-        for collider in collisionList.keys():
+        for collider, point in collisionList.items():
             physicsManager.resolveIntersection(self.player, collider)
 
     def on_render(self):
         # Draw everything in the LayeredUpdates group
-        dirty = self.renderables.draw(self._display_surf)
+        #dirty = self.renderables.draw(self._display_surf)
         # Update the window
-        pygame.display.update(dirty)
+        #pygame.display.update(dirty)
         # Clear the previously rendered stuff
-        self.renderables.clear(self._display_surf, self.background)
+        #self.renderables.clear(self._display_surf, self.background)
+        self._display_surf.blit(self.background, (0,0))
+        for a in self.actors:
+            self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
+        pygame.display.update()
    
     def on_cleanup(self):
         pygame.quit()
