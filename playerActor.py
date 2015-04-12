@@ -29,25 +29,32 @@ class PlayerActor(actor.Actor):
         oldstate = str(self.currState)
         if self.input.L_DOWN:
             self.prev_orientation, self.curr_orientation = self.curr_orientation, "Left"
-            if self.input.SPACE_DOWN and ((not self.pressed_space) and (not self.currState.startswith("JUMP"))):
+            if self.currState == "JUMPING":
+                pass
+            elif self.input.SPACE_DOWN:
                 self.currState = "JUMP_LEFT"
             else:
-                self.pressed_space = False
+                #self.pressed_space = False
                 self.currState = "MOVE_LEFT"
         elif self.input.R_DOWN:
             self.prev_orientation, self.curr_orientation = self.curr_orientation, "Right"
-            if self.input.SPACE_DOWN and ((not self.pressed_space) and (not self.currState.startswith("JUMP"))):
+            if self.currState == "JUMPNING":
+                pass
+            elif self.input.SPACE_DOWN: #and ((not self.pressed_space) and (not self.currState.startswith("JUMP"))):
                 self.currState = "JUMP_RIGHT"
             else:
-                self.pressed_space = False
+                #self.pressed_space = False
                 self.currState = "MOVE_RIGHT"
+
         elif self.input.SPACE_DOWN:
-            if (not self.pressed_space) and (not self.currState.startswith("JUMP")):
+            if not self.currState == "JUMPING":
+                print("original jump")
                 self.currState = "JUMP_NEUTRAL"
-                self.pressed_space = True
+                self.jumping = True
+                #self.pressed_space = True
+
 
         else:
-            self.pressed_space = False
             self.currState = "IDLE"
 
     def checkState(self):
@@ -57,9 +64,14 @@ class PlayerActor(actor.Actor):
         elif self.currState == "MOVE_RIGHT":
             self.accels['move'] = 12.0
             self.targetVelocities['move'] = actor.vector.Vector(5.0, None)
+        elif self.currState == "JUMPING":
+            if self.accels['jump'] != 0:
+                self.accels['jump'] -= 10
         elif self.currState == "JUMP_NEUTRAL":
             self.accels['jump'] = 200.0
             self.targetVelocities['jump'] = actor.vector.Vector(None, 5.0)
+            self.currState = "JUMPING"
+
         elif self.currState == "IDLE":
             self.accels['move'] = 20.0
             self.targetVelocities['move'] = actor.vector.Vector(0.0, None)
