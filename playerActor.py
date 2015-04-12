@@ -56,26 +56,26 @@ class PlayerActor(actor.Actor):
             self.targetVelocities['move'] = actor.vector.Vector(0.0, None)
             if 'jump' in self.accels:
                 self.accels.pop('jump')
-                self.targetVelocities.pop('jump')            
+                self.targetVelocities.pop('jump')
+
+    def _tinyTimer(self, count):
+        timer = 0
+        for i in range(100):
+            timer += 1
 
     def checkAnimation(self):
         if self.curr_orientation != self.prev_orientation: # case: Turned
-            timer = 0
             for i in range(7):
-                if timer == 5:
-                    self.updateAnimation("turnTo" + self.curr_orientation)
-                    timer = 0
-                else:
-                    timer += 1
-            #self.updateAnimation("idleLeft")
+                self._tinyTimer(50)
+                self.updateAnimation("turnTo" + self.curr_orientation)
+
+        self._tinyTimer(100)
 
         actor_state = ""
         if self.currState == "IDLE":
             actor_state = "idle" + self.curr_orientation
-
         else:
             actor_state = "move" + self.curr_orientation
-
         self.updateAnimation(actor_state)
 
 
