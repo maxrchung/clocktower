@@ -59,6 +59,7 @@ class App:
         #gearInfo = {"SINGLEFRAME" : (0, 1)}
         #gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
         self.background = pygame.image.load(os.path.join('Art', 'background.png')).convert_alpha()
+        self.clocktowertear = pygame.image.load(os.path.join('Art', 'clocktowertear.png')).convert_alpha()
         self.clocktower = pygame.image.load(os.path.join('Art', 'clocktower.png')).convert_alpha()
         self.clocktower_tear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
         self.player = self.get_player_actor(236,624,-40)
@@ -84,8 +85,7 @@ class App:
         if collisionList:
             self.player.jumping = False
         # if there were collisions with player, resolve intersections
-        for collider, point in collisionList.items():
-            physicsManager.resolveIntersection(self.player, collider)
+            physicsManager.resolveIntersection(self.player, collisionList)
 
     def on_render(self):
         # Draw everything in the LayeredUpdates group
@@ -95,9 +95,11 @@ class App:
         # Clear the previously rendered stuff
         #self.renderables.clear(self._display_surf, self.background)
         self._display_surf.blit(self.background, (0,0))
-        self._display_surf.blit(self.clocktower_tear,(480,0))
-        self._display_surf.blit(self.clocktower,(520,0))
+        self._display_surf.blit(self.clocktowertear,(720-247,0))
+        self._display_surf.blit(self.clocktower,(528,0))
         for a in self.actors:
+            if a.tear:
+                self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
             self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
         pygame.display.update()
    
@@ -150,7 +152,7 @@ class App:
                                                    PLAYERSIZE,
                                                    info_dic, scale)
         playerAnimation.update_frame("idleRight")
-        return playerActor.PlayerActor(vector.Vector(x, y), playerAnimation, (self.renderables))
+        return playerActor.PlayerActor(vector.Vector(x, y), playerAnimation, 48,(self.renderables))
     
 
     def get_object(self, row, col, element):
@@ -167,6 +169,7 @@ class App:
             elif element == "x":
                 pass
             elif element == "f":
+                #self.get_player_actor(start_x, start_y, -20)
                 return self.get_ladder_top_actor(start_x, start_y)
             elif element == "r":
                 return self.get_ladder_bottom_actor(start_x, start_y)
@@ -180,6 +183,7 @@ class App:
             elif element == "X":
                 pass
             elif element == "F":
+                #self.get_player_actor(start_x, start_y, -20)
                 return self.get_ladder_top_actor(start_x, start_y)
             elif element == "R":
                 return self.get_ladder_bottom_actor(start_x, start_y)
@@ -209,7 +213,7 @@ class App:
                                                         GEARSIZE3,
                                                         info_dic3)
         lVertGearAnimation.update_frame("lVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, (self.renderables, self.gears))
+        return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, 24, (self.renderables, self.gears), id="LARGE")
 
     def get_mVertGearActor(self, x, y, clockwise):
         """
@@ -221,7 +225,7 @@ class App:
                                                         GEARSIZE2,
                                                         info_dic2)
         mVertGearAnimation.update_frame("mVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), mVertGearAnimation, clockwise, (self.renderables, self.gears))
+        return gearActor.GearActor(vector.Vector(x, y), mVertGearAnimation, clockwise, 24, (self.renderables, self.gears), id="MEDIUM")
 
     def get_sVertGearActor(self, x, y, clockwise):
         """
@@ -233,7 +237,7 @@ class App:
                                                         GEARSIZE1,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), sVertGearAnimation, clockwise, (self.renderables, self.gears))
+        return gearActor.GearActor(vector.Vector(x, y), sVertGearAnimation, clockwise, 24, (self.renderables, self.gears), id="SMALL")
 
     def get_ladder_bottom_actor(self, x, y):
         """
@@ -245,7 +249,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 24, (self.renderables, self.ladders))
 
     def get_ladder_top_actor(self, x, y):
         """
@@ -257,7 +261,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 24, (self.renderables, self.ladders))
 
     def get_wall(self, x,y, type):
         """
@@ -272,7 +276,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 1, (self.renderables, self.ladders))
 
 
 

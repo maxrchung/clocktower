@@ -5,9 +5,9 @@ import physicsManager
 from pygame.locals import *
  
 class PlayerActor(actor.Actor):
-    def __init__(self, pos, animation, groups):
+    def __init__(self, pos, animation, radius, groups):
         # Call the parent class (Actor) constructor
-        actor.Actor.__init__(self, pos, animation, True, groups)
+        actor.Actor.__init__(self, pos, animation, True, radius, groups)
         self.currState = "IDLE"
         self.prev_orientation = "Right"
         self.curr_orientation = "Right"
@@ -29,13 +29,16 @@ class PlayerActor(actor.Actor):
         oldstate = str(self.currState)
 
         if self.jumping:
+            self.currState = "JNORM"
             if self.input.L_DOWN:
                 self.prev_orientation, self.curr_orientation = self.curr_orientation, "Left"
                 self.currState = "JUMP_LEFT"
+                #self.currState = "MOVE_LEFT"
 
             if self.input.R_DOWN:
                 self.prev_orientation, self.curr_orientation = self.curr_orientation, "Right"
                 self.currState = "JUMP_RIGHT"
+                #self.currState = "MOVE_RIGHT"
 
             elif self.input.SPACE_DOWN:
                 pass
@@ -95,16 +98,24 @@ class PlayerActor(actor.Actor):
             self.targetVelocities['move'] = actor.vector.Vector(5.0, None)
 
         elif self.jumping:
+            #=========
+            if self.currState == "JUMP_LEFT":
+                #self.accels['move'] = 16.0
+                self.targetVelocities['jump'] = actor.vector.Vector(-5.0, 3.0)
+            elif self.currState == "JUMP_RIGHT":
+                #self.accels['move'] = 16.0
+                self.targetVelocities['jump'] = actor.vector.Vector(5.0, 3.0)
+
+
             if 'jump' in self.accels and self.accels['jump'] != 0:
                 self.accels['jump'] -= 10
-            else:
-                #self.jumping = False
+            elif self.currState == "JNORM":
                 self.currState = "IDLE"
 
         elif self.currState == "JUMP_NEUTRAL":
             self.jumping = True
             self.accels['jump'] = 200.0
-            self.targetVelocities['jump'] = actor.vector.Vector(None, 5.0)
+            self.targetVelocities['jump'] = actor.vector.Vector(None, 4.0)
             self.currState = "JUMP_NEUTRAL"
 
         elif self.currState == "IDLE":
