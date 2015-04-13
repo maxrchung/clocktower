@@ -39,6 +39,7 @@ class Animation:
     def _frame_at(self, rectangle):
         rect = pygame.Rect(rectangle)
         frame = pygame.Surface(rect.size).convert_alpha()
+        frame.fill((0, 0, 0, 0))
         frame.blit(self._spritesheet, (0, 0), rect)
         return frame
 
@@ -62,7 +63,7 @@ class Animation:
             masks.append(pygame.mask.from_surface(frames[col_number]))
         """
 
-        self._states[state_name] = (frame_count, frames, masks) #####
+        self._states[state_name] = (frame_count, frames) #####
         return
 
     def _load_image(self, spritesheet_path):
