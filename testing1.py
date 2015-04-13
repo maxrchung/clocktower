@@ -106,7 +106,8 @@ class App:
                 self.game_load = False
             # update inputs
             self.player.update()
-            self.minute_hand.update()
+            if self.minute_hand.update():
+                self.game_state = "END"
             # spin gears
             for gear in self.gears.sprites():
                 gear.rotateGear()
@@ -116,11 +117,13 @@ class App:
             # check for collisions with player against gears group
             collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
             # move player if he's touching a gear
+            touchedClockwise = False
             if collisionList:
                 self.player.accels['gear'] = 10.0
                 for gearCollide in collisionList:
                     # CLOCKWISE
                     if gearCollide.clockwise:
+                        touchedClockwise = True
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
@@ -128,7 +131,7 @@ class App:
                             else:
                                 # TOPRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0).get_norm()
-                        else:
+                        else: 
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, 2.0).get_norm()
@@ -137,6 +140,10 @@ class App:
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0).get_norm()
                     # COUNTERCLOCKWISE
                     else:
+                        # kill player if touched both cc and clockwise
+                        if touchedClockwise:
+                            self.game_state = "LOSE"
+                            return
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
@@ -162,7 +169,7 @@ class App:
 			# if a player's standing on something, reset jump
             if collisionList:
                 for collider in collisionList:
-                    if self.player.rect.centery < collider.rect.centery:
+                    if self.player.rect.centery < collider.rect.bottom:
                         self.player.jumping = False
                         self.player.accels['gravity'] = 0.0
                         self.player.velocity.y = 0.0
@@ -216,12 +223,14 @@ class App:
                 self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
             self.minute_hand.draw()
         elif self.game_state == "WIN":
+            #self.sound.playSoundEffect('Level Completed.wav')
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.win,(0,0,))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
             self._display_surf.blit(self.clocktower,(528,0))
             self._display_surf.blit(self.player_marker, (550, 720 - (100 *self.game_counter)))
         elif self.game_state == "LOSE":
+            #self.sound.playMusic('Clock Strikes Twelve.mp3', 1)
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.lose,(0,0,))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
@@ -235,7 +244,6 @@ class App:
         if self.on_init() == False:
             self._running = False
         while( self._running ):
-            #print(self.game_state)
             for event in pygame.event.get():
                 if self.on_event(event):
                     self.game_state = "GAME"
