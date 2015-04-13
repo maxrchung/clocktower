@@ -2,6 +2,7 @@ import pygame
 import actor
 import InputManager
 import physicsManager
+import os
 from pygame.locals import *
  
 class PlayerActor(actor.Actor):
@@ -16,10 +17,13 @@ class PlayerActor(actor.Actor):
         self.timer = 0
         self.turning = False
         self.jumping = False
-        
+
+        self.tear = pygame.image.load(os.path.join('Art', 'idleTearRight.png')).convert_alpha()
+
     def update(self):
         # update the input manager
         self.input.update()
+        self.tearpos = (self.pos.x - 12, self.pos.y - 12)
         # do state transitions as needed
         #self.checkInputs()
         #self.checkState()
