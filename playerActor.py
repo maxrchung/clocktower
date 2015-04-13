@@ -2,6 +2,7 @@ import pygame
 import actor
 import InputManager
 import physicsManager
+import os
 import soundManager
 from pygame.locals import *
  
@@ -19,10 +20,15 @@ class PlayerActor(actor.Actor):
         self.jumping = False
         # Sound Effect
         self.sound = soundManager.SoundManager()
-        
+
+        self.tear = pygame.image.load(os.path.join('Art', 'idleTearRight.png')).convert_alpha()
+        self.tear = pygame.transform.smoothscale(self.tear, (88,132))
+
+
     def update(self):
         # update the input manager
         self.input.update()
+        self.tearpos = (self.pos.x - 9, self.pos.y - 8)
         # do state transitions as needed
         #self.checkInputs()
         #self.checkState()
@@ -36,13 +42,11 @@ class PlayerActor(actor.Actor):
             self.targetVelocities['move'] = actor.vector.Vector(-3.0, None)
             self.prev_orientation = self.curr_orientation
             self.curr_orientation = "Left"
-            self.sound.playSoundEffect("Walking.wav")
         elif self.input.R_DOWN:
             self.accels['move'] = 10.0
             self.targetVelocities['move'] = actor.vector.Vector(3.0, None)
             self.prev_orientation = self.curr_orientation
             self.curr_orientation = "Right"
-            self.sound.playSoundEffect("Walking.wav")
         else:
             self.accels['move'] = 7.0
             self.targetVelocities['move'] = actor.vector.Vector(0.0, None)
