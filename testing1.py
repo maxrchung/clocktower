@@ -127,14 +127,14 @@ class App:
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 2.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0).get_norm()
                             else:
                                 # TOPRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0).get_norm()
                         else: 
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 2.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0).get_norm()
                             else:
                                 # BOTTOMRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0).get_norm()
@@ -150,14 +150,14 @@ class App:
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0).get_norm()
                             else:
                                 # TOPRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 2.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0).get_norm()
                         else:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
                                 self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0).get_norm()
                             else:
                                 # BOTTOMRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 2.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0).get_norm()
             else:
                 self.player.accels['gear'] = 0.0
                 self.player.targetVelocities['gear'] = vector.Vector(None, None)
@@ -166,10 +166,10 @@ class App:
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
             collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
             collisionDeath = physicsManager.checkCollisionAgainstGroup(self.player, self.walls)
-			# if a player's standing on something, reset jump
+	    # if a player's standing on something, reset jump
             if collisionList:
                 for collider in collisionList:
-                    if self.player.rect.centery < collider.rect.bottom:
+                    if self.player.rect.bottom < collider.rect.bottom:
                         self.player.jumping = False
                         self.player.accels['gravity'] = 0.0
                         self.player.velocity.y = 0.0
