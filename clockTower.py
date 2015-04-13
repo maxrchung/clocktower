@@ -37,7 +37,7 @@ class Hand:
             rotated_rect.center = rotated_hourimage.get_rect().center
             self.hour_image = rotated_hourimage.subsurface(rotated_rect).copy()
             self.draw()
-            return "END"  # TIMER RAN OUT
+            return True  # TIMER RAN OUT
         self.current_time = self.end_time - time.time()
 
         self.hour_image = pygame.transform.rotate(self.hour_original_image, 8)
@@ -53,7 +53,7 @@ class Hand:
 
         self.image = rotated_image
         self.mask = pygame.mask.from_surface(self.image)
-        return '' 
+        return False
 
     def draw(self):
         #self.surface.blit(self.background, (0,0))

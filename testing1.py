@@ -106,7 +106,8 @@ class App:
                 self.game_load = False
             # update inputs
             self.player.update()
-            self.minute_hand.update()
+            if self.minute_hand.update():
+                self.game_state = "END"
             # spin gears
             for gear in self.gears.sprites():
                 gear.rotateGear()
