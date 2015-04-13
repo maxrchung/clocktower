@@ -46,7 +46,9 @@ class Actor(pygame.sprite.Sprite):
     def moveActor(self, x, y):
         self.pos.x += x
         self.pos.y -= y
-        self.rect.move_ip(x, -y)
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
+        #self.rect.move_ip(x, y)
 
     def updateAnimation(self, actor_state):
         self.animator.update_frame(actor_state)
