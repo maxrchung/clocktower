@@ -22,10 +22,9 @@ class App:
         self.H_BOXES = 11
         self.V_BOXES = 15
         self.box_size = 48
-        self.LEVEL_LIST = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt','level5.txt', 
-'level6.txt', 'level7.txt','level8.txt','level9.txt','level10.txt','level11.txt',
-'level12.txt','level13.txt','level14.txt','level15.txt','level16.txt','level17.txt',
-'level18.txt']
+        self.LEVEL_LIST = ['level2.txt', 'level3.txt', 'level4.txt', 
+'level6.txt', 'level7.txt','level8.txt','level9.txt','level10.txt',
+'level12.txt','level13.txt','level14.txt','level17.txt']
         self.game_state = "START"
         self.game_load = True
         self.game_counter = 0
@@ -98,7 +97,7 @@ class App:
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
-                self.level_name = "test.txt"#self.random_level()
+                self.level_name = "level2.txt"#self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
@@ -187,6 +186,7 @@ class App:
                 self.game_load = True
             if collisionDeath:
                 self.game_state = "LOSE"
+                self.sound.playMusic('Clock Strikes Twelve.mp3', 1)
             # if there were collisions with player, resolve intersections
 
                 
@@ -224,7 +224,6 @@ class App:
             self._display_surf.blit(self.clocktower,(528,0))
             self._display_surf.blit(self.player_marker, (550, 720 - (100 *self.game_counter)))
         elif self.game_state == "LOSE":
-            #self.sound.playMusic('Clock Strikes Twelve.mp3', 1)
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.lose,(0,0,))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
@@ -240,7 +239,10 @@ class App:
         while( self._running ):
             for event in pygame.event.get():
                 if self.on_event(event):
+                    self.sound.stopMusic()
+                    self.sound.playMusic("Tower Climb.mp3", -1)
                     self.game_state = "GAME"
+                    self.minute_hand = clockTower.Hand(self._display_surf)
                     self.game_counter = 0
                     self.game_load = True
                 #print(self.game_state)
