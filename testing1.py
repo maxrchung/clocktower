@@ -141,9 +141,9 @@ class App:
                     # COUNTERCLOCKWISE
                     else:
                         # kill player if touched both cc and clockwise
-                            if touchedClockwise:
-                                self.game_state = "LOSE"
-                                return
+                        if touchedClockwise:
+                            self.game_state = "LOSE"
+                            return
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
