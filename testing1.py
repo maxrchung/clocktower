@@ -11,6 +11,7 @@ import os
 import pygame
 import random
 import tile_loader
+import soundManager
  
 class App:
     def __init__(self):
@@ -35,6 +36,10 @@ class App:
         self.gears = pygame.sprite.Group()
         self.ladders = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
+        # Playing Sound Effects
+        self.sound = soundManager.SoundManager()
+        self.sound.playMusic("Tower Climb.mp3", -1)
+        self.sound.setVolume(0.25)
     
     def draw_grid(surface):
         for i in range(1,H_BOXES):

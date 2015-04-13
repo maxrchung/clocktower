@@ -2,6 +2,7 @@ import pygame
 import actor
 import InputManager
 import physicsManager
+import soundManager
 from pygame.locals import *
  
 class PlayerActor(actor.Actor):
@@ -16,6 +17,8 @@ class PlayerActor(actor.Actor):
         self.timer = 0
         self.turning = False
         self.jumping = False
+        # Sound Effect
+        self.sound = soundManager.SoundManager()
         
     def update(self):
         # update the input manager
@@ -33,11 +36,13 @@ class PlayerActor(actor.Actor):
             self.targetVelocities['move'] = actor.vector.Vector(-3.0, None)
             self.prev_orientation = self.curr_orientation
             self.curr_orientation = "Left"
+            self.sound.playSoundEffect("Walking.wav")
         elif self.input.R_DOWN:
             self.accels['move'] = 10.0
             self.targetVelocities['move'] = actor.vector.Vector(3.0, None)
             self.prev_orientation = self.curr_orientation
             self.curr_orientation = "Right"
+            self.sound.playSoundEffect("Walking.wav")
         else:
             self.accels['move'] = 7.0
             self.targetVelocities['move'] = actor.vector.Vector(0.0, None)
@@ -46,6 +51,7 @@ class PlayerActor(actor.Actor):
         if self.input.SPACE_DOWN and not self.jumping:
             self.jumping = True
             self.velocity.y = 5.0
+            self.sound.playSoundEffect("Jumping.wav")
         else:
             self.targetVelocities['jump'] = actor.vector.Vector(None, None)
             
