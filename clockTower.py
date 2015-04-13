@@ -14,7 +14,7 @@ class Hand:
 
         # init the hour hand
         self.hour_image = pygame.image.load(os.path.join('Art', 'hourHand.png')).convert_alpha()
-        self.hour_original_image = self.hour_hand.copy()
+        self.hour_original_image = self.hour_image.copy()
         self.hour_rect = self.image.get_rect()
 
         # current minute

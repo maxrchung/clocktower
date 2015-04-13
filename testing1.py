@@ -12,6 +12,7 @@ import pygame
 import random
 import tile_loader
 import soundManager
+import clockTower
  
 class App:
     def __init__(self):
@@ -74,9 +75,7 @@ class App:
         self.clocktower_tear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
         self.start = pygame.image.load(os.path.join('Art', 'start.png')).convert_alpha()
         self.win = pygame.image.load(os.path.join('Art', 'win.png')).convert_alpha()
-        self.player = self.get_player_actor(236,620,-30)
-        self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
-        #self.minute_hand = clockTower.Hand(self._display_surf)
+        self.minute_hand = clockTower.Hand(self._display_surf)
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -84,21 +83,18 @@ class App:
         elif event.type == pygame.KEYDOWN:
             if self.game_state == "START" or self.game_state == "WIN":
                 if event.key == pygame.K_RETURN:
-                    return "GAME"
+                    return True
     
     def on_loop(self):
         # update at 60 fps
         self.clock.tick(60)
         if self.game_state == "START":
             pass
-        elif self.game_counter > 6:
-            print('made it')
-            self.game_state == "WIN"
         elif self.game_state == "GAME":    
             if self.game_load:
-                self.player = self.get_player_actor(236,620,-30)
+                self.player = self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
-                self.level_name = 'level14.txt'#self.random_level()
+                self.level_name = 'testing.txt'#self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
@@ -106,7 +102,7 @@ class App:
                 self.game_load = False
             # update inputs
             self.player.update()
-            #self.minute_hand.update()
+            self.minute_hand.update()
             # spin gears
             for gear in self.gears.sprites():
                 gear.rotateGear()
@@ -134,6 +130,8 @@ class App:
         #pygame.display.update(dirty)
         # Clear the previously rendered stuff
         #self.renderables.clear(self._display_surf, self.background)
+        if self.game_counter > 6:
+            self.game_state = "WIN"
         if self.game_state == "START":
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
@@ -147,11 +145,12 @@ class App:
                 if a.tear:
                     self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
                 self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
-            #self.minute_hand.draw()
+            self.minute_hand.draw()
         elif self.game_state == "WIN":
-            self._display_surf.blit(self.win, (0,0))
+            self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
             self._display_surf.blit(self.clocktowertear,(528,0))
+            self._display_surf.blit(self.win,(0,0,))
 
         pygame.display.update()
    
@@ -163,8 +162,9 @@ class App:
             self._running = False
         while( self._running ):
             for event in pygame.event.get():
-                if self.on_event(event) == "GAME":
+                if self.on_event(event):
                     self.game_state = "GAME"
+                    self.game_counter = 0
                 self.on_event(event)
             self.on_loop()
             self.on_render()
