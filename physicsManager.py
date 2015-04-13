@@ -25,7 +25,6 @@ def resolveIntersection(actor, colliders):
         increment = increment + colliderVec - actorVec
     increment = increment.get_norm()
     increment.x *= -1
-    print(increment)
     
     # while the actor is colliding, move it until it isn't colliding
     if increment.mag == 0:

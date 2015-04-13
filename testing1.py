@@ -115,10 +115,38 @@ class App:
             if collisionList:
                 self.player.accels['gear'] = 10.0
                 for gearCollide in collisionList:
+                    # CLOCKWISE
                     if gearCollide.clockwise:
-                        self.player.targetVelocities['gear'] = vector.Vector(2.0, None)
+                        if self.player.rect.centery < gearCollide.rect.centery:
+                            if self.player.rect.centerx < gearCollide.rect.centerx:
+                                # TOPLEFT
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
+                            else:
+                                # TOPRIGHT
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
+                        else:
+                            if self.player.rect.centerx < gearCollide.rect.centerx:
+                                # BOTTOMLEFT
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
+                            else:
+                                # BOTTOMRIGHT
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
+                    # COUNTERCLOCKWISE
                     else:
-                        self.player.targetVelocities['gear'] = vector.Vector(-2.0, None)
+                        if self.player.rect.centery < gearCollide.rect.centery:
+                            if self.player.rect.centerx < gearCollide.rect.centerx:
+                                # TOPLEFT
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
+                            else:
+                                # TOPRIGHT
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
+                        else:
+                            if self.player.rect.centerx < gearCollide.rect.centerx:
+                                # BOTTOMLEFT
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
+                            else:
+                                # BOTTOMRIGHT
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
             else:
                 self.player.accels['gear'] = 0.0
                 self.player.targetVelocities['gear'] = vector.Vector(None, None)
@@ -128,8 +156,15 @@ class App:
             collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
             # if a player's standing on something, reset jump
             if collisionList:
-                self.player.jumping = False
+                for collider in collisionList:
+                    if self.player.rect.centery < collider.rect.centery:
+                        self.player.jumping = False
+                        self.player.accels['gravity'] = 0.0
+                        self.player.velocity.y = 0.0
+                # if there were collisions with player, resolve intersections
                 physicsManager.resolveIntersection(self.player, collisionList)
+            else:
+                self.player.accels['gravity'] = 4.0
             if collisionNextLevel:
                 self.game_load = True
             # if there were collisions with player, resolve intersections
