@@ -5,9 +5,9 @@ import physicsManager
 from pygame.locals import *
  
 class PlayerActor(actor.Actor):
-    def __init__(self, pos, animation, groups):
+    def __init__(self, pos, animation, radius, groups):
         # Call the parent class (Actor) constructor
-        actor.Actor.__init__(self, pos, animation, True, groups)
+        actor.Actor.__init__(self, pos, animation, True, radius, groups)
         self.currState = "IDLE"
         self.prev_orientation = "Right"
         self.curr_orientation = "Right"
