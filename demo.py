@@ -30,7 +30,6 @@ class App:
         self.renderables = pygame.sprite.LayeredUpdates()
         # Keep a group of gear colliders
         self.gears = pygame.sprite.Group()
-        self.ladders = pygame.sprite.Group()
     
     def draw_grid(surface):
         for i in range(1,H_BOXES):
@@ -42,9 +41,8 @@ class App:
 
     def on_init(self):
         pygame.init()
-        self._display_surf = pygame.display.set_mode(self.size, pygame.SRCALPHA)
+        self._display_surf = pygame.display.set_mode(self.size, pygame.SWSURFACE)
         self._running = True
-        pygame.display.set_caption("Gears to Midnight")
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
@@ -60,10 +58,9 @@ class App:
         #gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
         self.background = pygame.image.load(os.path.join('Art', 'background.png')).convert_alpha()
         self.clocktower = pygame.image.load(os.path.join('Art', 'clocktower.png')).convert_alpha()
-        self.clocktower_tear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
-        self.player = self.get_player_actor(236,624,-40)
-        self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
-
+        self.player = self.get_player_actor(0,0,-20)
+        self.actors = []
+ 
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self._running = False
@@ -95,8 +92,7 @@ class App:
         # Clear the previously rendered stuff
         #self.renderables.clear(self._display_surf, self.background)
         self._display_surf.blit(self.background, (0,0))
-        self._display_surf.blit(self.clocktower_tear,(480,0))
-        self._display_surf.blit(self.clocktower,(520,0))
+        self._display_surf.blit(self.clocktower,(528,0))
         for a in self.actors:
             self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
         pygame.display.update()
@@ -107,7 +103,7 @@ class App:
     def on_execute(self):
         if self.on_init() == False:
             self._running = False
-        self.load_level(self.open_matrix(os.path.realpath('level2.txt')))
+        self.load_level(self.open_matrix(os.path.realpath('level1.txt')))
         while( self._running ):
             for event in pygame.event.get():
                 self.on_event(event)
@@ -120,6 +116,7 @@ class App:
         return str(random_item)
 
     def load_level(self, level_matrix):
+        print(level_matrix)
         for i in level_matrix:
             for x in range(len(i)):
                 actor = self.get_object(level_matrix.index(i),x, i[x])
@@ -137,7 +134,7 @@ class App:
             for row in file_matrix:
                 matrix.append(list(row))
         return matrix
-
+    
     def get_player_actor(self, x, y, scale):
         PLAYERSIZE = pygame.Rect(0, 0, 96, 144)
         info_dic = {"idleLeft": (0, 4),
@@ -167,9 +164,10 @@ class App:
             elif element == "x":
                 pass
             elif element == "f":
-                return self.get_ladder_top_actor(start_x, start_y)
+                pass
+                #self.get_player_actor(start_x, start_y, -20)
             elif element == "r":
-                return self.get_ladder_bottom_actor(start_x, start_y)
+                pass
         else:
             if element == "Q":
                 return self.get_sVertGearActor(start_x, start_y, True)
@@ -180,11 +178,11 @@ class App:
             elif element == "X":
                 pass
             elif element == "F":
-                return self.get_ladder_top_actor(start_x, start_y)
+                pass
+                #self.get_player_actor(start_x, start_y, -20)
             elif element == "R":
-                return self.get_ladder_bottom_actor(start_x, start_y)
+                pass
         pass
-
     def get_death_actor(self, x, y, scale):
         """
         :return: actor, function creates a death animation and puts it at the given x and y
@@ -235,44 +233,6 @@ class App:
         sVertGearAnimation.update_frame("sVertGear")
         return gearActor.GearActor(vector.Vector(x, y), sVertGearAnimation, clockwise, (self.renderables, self.gears))
 
-    def get_ladder_bottom_actor(self, x, y):
-        """
-        :return: a gear actor without rotation
-        """
-        LADDERSIZE = pygame.Rect(0, 0, 48, 96)
-        info_dic1 = {"sVertGear": (0, 1)}
-        sVertGearAnimation = animation.Animation(os.path.join('Art', 'ladderBottom.png'),
-                                                        LADDERSIZE,
-                                                        info_dic1)
-        sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, (self.renderables, self.ladders))
-
-    def get_ladder_top_actor(self, x, y):
-        """
-        :return: a ladder actor
-        """
-        LADDERSIZE = pygame.Rect(0, 0, 48, 96)
-        info_dic1 = {"sVertGear": (0, 1)}
-        sVertGearAnimation = animation.Animation(os.path.join('Art', 'ladderTop.png'),
-                                                        LADDERSIZE,
-                                                        info_dic1)
-        sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, (self.renderables, self.ladders))
-
-    def get_wall(self, x,y, type):
-        """
-        :return: a wall
-        """
-        if type:
-            LADDERSIZE = pygame.Rect(0, 0, 1, 720)
-        else:
-            LADDERSIZE = pygame.Rect(0, 0, 720, 1)
-        info_dic1 = {"sVertGear": (0, 1)}
-        sVertGearAnimation = animation.Animation(os.path.join('Art', 'ladderTop.png'),
-                                                        LADDERSIZE,
-                                                        info_dic1)
-        sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, (self.renderables, self.ladders))
 
 
 
