@@ -235,11 +235,14 @@ class App:
         if self.on_init() == False:
             self._running = False
         while( self._running ):
+            print(self.game_state)
             for event in pygame.event.get():
                 if self.on_event(event):
                     self.game_state = "GAME"
                     self.game_counter = 0
-                self.on_event(event)
+                    self.game_load = True
+                print(self.game_state)
+                # self.on_event(event)
             self.on_loop()
             self.on_render()
         self.on_cleanup()
