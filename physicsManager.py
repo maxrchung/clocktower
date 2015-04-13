@@ -24,8 +24,7 @@ def resolveIntersection(actor, colliders):
         colliderVec = vector.Vector(collider.center[0], collider.center[1])
         increment = increment + colliderVec - actorVec
     increment = increment.get_norm()
-    increment.x = iround(increment.x)
-    increment.y = iround(increment.y)
+    increment.x *= -1
     
     # while the actor is colliding, move it until it isn't colliding
     if increment.mag == 0:
@@ -40,7 +39,4 @@ def resolveIntersection(actor, colliders):
             actor.moveActor(increment.x, increment.y)
         else:
             colliding = False
-
-def iround(i):
-    return int(round(i) - 0.5) + (i > 0)
     

@@ -21,9 +21,12 @@ class PlayerActor(actor.Actor):
         # Sound Effect
         self.sound = soundManager.SoundManager()
 
-        self.tear = pygame.image.load(os.path.join('Art', 'idleTearRight.png')).convert_alpha()
-        self.tear = pygame.transform.smoothscale(self.tear, (88,132))
+        self.tearRight = pygame.image.load(os.path.join('Art', 'idleTearRight.png')).convert_alpha()
+        self.tearRight = pygame.transform.smoothscale(self.tearRight, (88,132))
+        self.tearLeft = pygame.image.load(os.path.join('Art', 'idleTearLeft.png')).convert_alpha()
+        self.tearLeft = pygame.transform.smoothscale(self.tearLeft, (88,132))
 
+        self.tear = self.tearRight
 
     def update(self):
         # update the input manager
@@ -41,11 +44,13 @@ class PlayerActor(actor.Actor):
             self.accels['move'] = 10.0
             self.targetVelocities['move'] = actor.vector.Vector(-3.0, None)
             self.prev_orientation = self.curr_orientation
+            self.tear = self.tearLeft
             self.curr_orientation = "Left"
         elif self.input.R_DOWN:
             self.accels['move'] = 10.0
             self.targetVelocities['move'] = actor.vector.Vector(3.0, None)
             self.prev_orientation = self.curr_orientation
+            self.tear = self.tearRight
             self.curr_orientation = "Right"
         else:
             self.accels['move'] = 7.0
