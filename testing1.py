@@ -96,7 +96,7 @@ class App:
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
-                self.level_name = "blank.txt"#self.random_level()
+                self.level_name = "test.txt"#self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
@@ -206,6 +206,7 @@ class App:
             self._display_surf.blit(self.win,(0,0,))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
             self._display_surf.blit(self.clocktower,(528,0))
+            self._display_surf.blit(self.player_marker, (550, 720 - (100 *self.game_counter)))
         elif self.game_state == "LOSE":
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.lose,(0,0,))
@@ -320,7 +321,7 @@ class App:
         while True:
             count = 0
             for i in range(9):
-                if count == 10
+                if count == 10:
                     death_actor.get_current_frame()
                     death_actor.update_current_frame()
                     count = 0
