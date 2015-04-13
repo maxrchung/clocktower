@@ -106,6 +106,7 @@ class App:
             # update inputs
             self.player.update()
             if self.minute_hand.update():
+                print('are we 5 minutes')
                 self.game_state = "END"
             # spin gears
             for gear in self.gears.sprites():
