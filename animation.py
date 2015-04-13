@@ -39,6 +39,7 @@ class Animation:
     def _frame_at(self, rectangle):
         rect = pygame.Rect(rectangle)
         frame = pygame.Surface(rect.size).convert_alpha()
+        frame.fill((0,0,0,0))
         frame.blit(self._spritesheet, (0, 0), rect)
         return frame
 
