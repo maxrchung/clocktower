@@ -136,14 +136,14 @@ class App:
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, None)
                             else:
                                 # TOPRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
                         else:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, None)
                             else:
                                 # BOTTOMRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
