@@ -23,8 +23,8 @@ class App:
         self.V_BOXES = 15
         self.box_size = 48
         self.LEVEL_LIST = ['level2.txt', 'level3.txt', 'level4.txt', 
-'level6.txt', 'level7.txt','level8.txt','level9.txt','level10.txt',
-'level12.txt','level13.txt','level14.txt','level17.txt']
+'level6.txt','level8.txt','level9.txt','level10.txt','level13.txt','level14.txt','level17.txt', 'level22.txt']
+        self.newlevel_list = []
         self.game_state = "START"
         self.game_load = True
         self.game_counter = 0
@@ -97,10 +97,8 @@ class App:
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
-                self.level_name = "level2.txt"#self.random_level()
-                print(self.level_name)
+                self.level_name = self.random_level()
                 self.game_counter += 1
-                print(self.game_counter)
                 self.load_level(self.open_matrix(os.path.realpath(self.level_name)))
                 self.game_load = False
             # update inputs
@@ -252,15 +250,18 @@ class App:
                     self.minute_hand = clockTower.Hand(self._display_surf)
                     self.game_counter = 0
                     self.game_load = True
-                #print(self.game_state)
                 # self.on_event(event)
             self.on_loop()
             self.on_render()
         self.on_cleanup()
 
     def random_level(self):
+        if not self.LEVEL_LIST:
+            self.LEVEL_LIST.extend(self.newlevel_list)
+            self.newlevel_list = []
         random_item = random.choice(self.LEVEL_LIST)
         self.LEVEL_LIST.remove(random_item)
+        self.newlevel_list.append(random_item)
         return str(random_item)
 
     def load_level(self, level_matrix):
