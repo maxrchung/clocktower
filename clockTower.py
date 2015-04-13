@@ -7,12 +7,20 @@ import pygame
 class Hand:
     def __init__(self, surface):
         self.surface = surface
+        # init the minute hand
         self.image = pygame.image.load(os.path.join('Art', 'minuteHand.png')).convert_alpha()
         self.original_image = self.image.copy()
         self.rect = self.image.get_rect()
+
+        # init the hour hand
+        self.hour_image = pygame.image.load(os.path.join('Art', 'hourHand.png')).convert_alpha()
+        self.hour_original_image = self.hour_hand.copy()
+        self.hour_rect = self.image.get_rect()
+
         # current minute
         self.start_angle = 30
         self.current_angle_offset = 0
+
         # start the timer
         self.start_time = time.time()
         self.total_time = 300
@@ -24,9 +32,15 @@ class Hand:
 
     def update(self):
         if self.start_time > self.end_time:
-            print("ran out")
+            rotated_hourimage = pygame.transform.rotate(self.hour_image, -6)
+            rotated_rect = self.hour_image.get_rect().copy()
+            rotated_rect.center = rotated_hourimage.get_rect().center
+            self.hour_image = rotated_hourimage.subsurface(rotated_rect).copy()
+            self.draw()
             return "END"  # TIMER RAN OUT
         self.current_time = self.end_time - time.time()
+
+        self.hour_image = pygame.transform.rotate(self.hour_original_image, 8)
 
         self.current_angle_offset = 5 - self.current_time // 60 #self.total_time
 
@@ -43,3 +57,4 @@ class Hand:
     def draw(self):
         #self.surface.blit(self.background, (0,0))
         self.surface.blit(self.image, (608-38, 93))
+        self.surface.blit(self.hour_image, (608-38, 93))
