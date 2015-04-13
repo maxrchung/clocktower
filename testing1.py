@@ -95,7 +95,7 @@ class App:
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
-                self.level_name = #self.random_level()
+                self.level_name = self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
@@ -112,10 +112,24 @@ class App:
                 a.updatePhysics(self.clock.get_time())
             # check for collisions with player against gears group
             collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
+            # move player if he's touching a gear
+            if collisionList:
+                self.player.accels['gear'] = 10.0
+                for gearCollide in collisionList:
+                    if gearCollide.clockwise:
+                        self.player.targetVelocities['gear'] = vector.Vector(2.0, None)
+                    else:
+                        self.player.targetVelocities['gear'] = vector.Vector(-2.0, None)
+            else:
+                self.player.accels['gear'] = 0.0
+                self.player.targetVelocities['gear'] = vector.Vector(None, None)
+            # check more collisions
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
             collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
+			collisionDeath = phy
             collisionDeath = physicsManager.checkCollisionAgainstGroup(self.player, self.walls)
+			# if a player's standing on something, reset jump
             if collisionList:
                 self.player.jumping = False
                 physicsManager.resolveIntersection(self.player, collisionList)
@@ -140,6 +154,7 @@ class App:
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.start,(0,0))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
+            self._display_surf.blit(self.clocktower,(528,0))
             self._display_surf.blit(self.clocktower,(528,0))
         elif self.game_state == "GAME":
             self._display_surf.blit(self.background, (0,0))
