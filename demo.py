@@ -27,16 +27,16 @@ class App:
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
-        #playerInfo = {"IDLE" : (0, 4)}
-        #playerAnimation = animation.Animation(os.path.join('Art', 'idleRight.png'), pygame.Rect(0, 0, 96, 144), playerInfo)
-        #playerAnimation.update_frame("IDLE")
+        # playerInfo = {"IDLE" : (0, 4)}
+        # playerAnimation = animation.Animation(os.path.join('Art', 'idleRight.png'), pygame.Rect(0, 0, 96, 144), playerInfo)
+        # playerAnimation.update_frame("IDLE")
         # load all sprites
-        #self.load_player_sprites()
-        #self.load_death_sprites()
-        #self.load_gear_sprites()
-        #self.playerAnimation.update_frame("idleLeft")
-        #gearInfo = {"SINGLEFRAME" : (0, 1)}
-        #gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
+        # self.load_player_sprites()
+        # self.load_death_sprites()
+        # self.load_gear_sprites()
+        # self.playerAnimation.update_frame("idleLeft")
+        # gearInfo = {"SINGLEFRAME" : (0, 1)}
+        # gearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'), pygame.Rect(0, 0, 48, 48), gearInfo)
         self.background = pygame.image.load(os.path.join('Art', 'background.png')).convert_alpha()
         
         self.player = self.get_player_actor(0, 0, -30)

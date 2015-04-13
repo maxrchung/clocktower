@@ -26,6 +26,7 @@ class App:
 'level18.txt']
         self.game_state = "START"
         self.game_load = True
+        self.game_counter = 0
         # Need a clock to scale physics vectors
         self.clock = pygame.time.Clock()
         # Keep a group of renderable actors
@@ -68,6 +69,7 @@ class App:
         self.start = pygame.image.load(os.path.join('Art', 'start.png')).convert_alpha()
         self.player = self.get_player_actor(236,624,-30)
         self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
+        #self.minute_hand = clockTower.Hand(self._display_surf)
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -84,10 +86,14 @@ class App:
             pass
         elif self.game_state == "GAME":    
             if self.game_load:
-                self.load_level(self.open_matrix(os.path.realpath('level17.txt')))
+                self.level_name = self.random_level()
+                print(self.level_name)
+                self.game_counter += 1
+                self.load_level(self.open_matrix(os.path.realpath(self.level_name)))
                 self.game_load = False
             # update inputs
             self.player.update()
+            #self.minute_hand.update()
             # spin gears
             for gear in self.gears.sprites():
                 gear.rotateGear()
@@ -122,6 +128,7 @@ class App:
                 if a.tear:
                     self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
                 self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
+            #self.minute_hand.draw()
         pygame.display.update()
    
     def on_cleanup(self):
