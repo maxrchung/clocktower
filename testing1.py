@@ -208,7 +208,7 @@ class App:
                 #self.get_player_actor(start_x, start_y, -20)
                 return self.get_ladder_top_actor(start_x, start_y)
             elif element == "R":
-                return self.get_ladder_bottom_actor(start_x, start_y)
+                return self.get_ladder_bottom_actor(start_x, start_y-48)
         pass
 
     def get_death_actor(self, x, y, scale):
@@ -286,7 +286,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 48, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 48, (self.renderables, self.ladders), id="LADDER_BOTTOM")
 
     def get_ladder_top_actor(self, x, y):
         """
@@ -298,7 +298,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 48, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 48, (self.renderables, self.ladders), id="LADDER_TOP")
 
     def get_wall(self, x,y, type):
         """

@@ -1,9 +1,11 @@
 import pygame
 import vector
 import animation
+import os
 from pygame.locals import *
+
 class Actor(pygame.sprite.Sprite):
-    def __init__(self, pos, animation, useGravity, radius, groups):
+    def __init__(self, pos, animation, useGravity, radius, groups, id=None):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         # Set a position for the Actor
@@ -27,7 +29,15 @@ class Actor(pygame.sprite.Sprite):
 
         # Will be specified by the inherited classes
         self.tear = None
-        
+        self.id = id
+        if self.id == "LADDER_BOTTOM":
+            self.tearpos = (self.pos.x - 24, self.pos.y)
+            self.tear = pygame.image.load(os.path.join('Art', 'ladderBottomTear.png')).convert_alpha()
+        elif self.id == 'LADDER_TOP':
+            self.tearpos = (self.pos.x - 24, self.pos.y)
+            self.tear = pygame.image.load(os.path.join('Art', 'ladderTopTear.png')).convert_alpha()
+
+
         # Add sprite into the specified groups. 
         self.add(groups);
 
