@@ -16,7 +16,7 @@ class App:
     def __init__(self):
         self._running = True
         self._display_surf = None
-        self.size = self.weight, self.height = 728, 720
+        self.size = self.weight, self.height = 720, 720
         self.H_BOXES = 11
         self.V_BOXES = 15
         self.box_size = 48
@@ -151,7 +151,7 @@ class App:
                                                    PLAYERSIZE,
                                                    info_dic, scale)
         playerAnimation.update_frame("idleRight")
-        return playerActor.PlayerActor(vector.Vector(x, y), playerAnimation, (self.renderables))
+        return playerActor.PlayerActor(vector.Vector(x, y), playerAnimation, 24, (self.renderables))
     
 
     def get_object(self, row, col, element):
