@@ -138,14 +138,14 @@ class App:
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, None)
                             else:
                                 # TOPRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
                         else:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, None)
                             else:
                                 # BOTTOMRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
@@ -167,9 +167,20 @@ class App:
                 physicsManager.resolveIntersection(self.player, collisionList)
             else:
                 self.player.accels['gravity'] = 4.0
+            # prevent player from leaving top left bottom
+            if self.player.rect.x < 0:
+                self.player.moveActor(-1*self.player.rect.x, 0)
+            if self.player.rect.y < 0:
+                self.player.moveActor(0, -1*self.player.rect.y)
+            if self.player.rect.x > 480:
+                self.player.moveActor(480 - self.player.rect.x, 0)
+            if self.player.rect.bottom > self.height:
+                self.game_state = "DEATH"
+                #deathActor = self.get_death_actor(self.player.pos.x, self.player.pos.y, -30)
+                #self.loop_death(deathActor)
+            # check if the player got to the top ladder
             if collisionNextLevel:
                 self.game_load = True
-            # if there were collisions with player, resolve intersections
 
                 
 
