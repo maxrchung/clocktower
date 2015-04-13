@@ -24,6 +24,7 @@ class App:
 'level6.txt', 'level7.txt','level8.txt','level9.txt','level10.txt','level11.txt',
 'level12.txt','level13.txt','level.14txt','level15.txt','level16.txt','level17.txt',
 'level18.txt']
+        self.game_state = "START"
         # Need a clock to scale physics vectors
         self.clock = pygame.time.Clock()
         # Keep a group of renderable actors
@@ -31,6 +32,7 @@ class App:
         # Keep a group of gear colliders
         self.gears = pygame.sprite.Group()
         self.ladders = pygame.sprite.Group()
+        self.walls = pygame.sprite.Group()
     
     def draw_grid(surface):
         for i in range(1,H_BOXES):
@@ -62,30 +64,38 @@ class App:
         self.clocktowertear = pygame.image.load(os.path.join('Art', 'clocktowertear.png')).convert_alpha()
         self.clocktower = pygame.image.load(os.path.join('Art', 'clocktower.png')).convert_alpha()
         self.clocktower_tear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
+        self.start = pygame.image.load(os.path.join('Art', 'start.png')).convert_alpha()
         self.player = self.get_player_actor(236,624,-40)
         self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self._running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                self.game_state = "GAME"
     
     def on_loop(self):
         # update at 60 fps
         self.clock.tick(60)
-        # update inputs
-        self.player.update()
-        # spin gears
-        for gear in self.gears.sprites():
-            gear.rotateGear()
-        # update physics for each actor in the game
-        for a in self.actors:
-            a.updatePhysics(self.clock.get_time())
-        # check for collisions with player against gears group
-        collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
-        if collisionList:
-            self.player.jumping = False
-        # if there were collisions with player, resolve intersections
-            physicsManager.resolveIntersection(self.player, collisionList)
+        if self.game_state == "START":
+            pass
+        elif self.game_state == "GAME":    
+            # update inputs
+            self.player.update()
+            # spin gears
+            for gear in self.gears.sprites():
+                gear.rotateGear()
+            # update physics for each actor in the game
+            for a in self.actors:
+                a.updatePhysics(self.clock.get_time())
+            # check for collisions with player against gears group
+            collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
+            collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
+            if collisionList:
+                self.player.jumping = False
+            # if there were collisions with player, resolve intersections
+                physicsManager.resolveIntersection(self.player, collisionList)
 
     def on_render(self):
         # Draw everything in the LayeredUpdates group
@@ -94,14 +104,21 @@ class App:
         #pygame.display.update(dirty)
         # Clear the previously rendered stuff
         #self.renderables.clear(self._display_surf, self.background)
-        self._display_surf.blit(self.background, (0,0))
-        self._display_surf.blit(self.clocktowertear,(720-247,0))
-        self._display_surf.blit(self.clocktower,(528,0))
-        for a in self.actors:
-            if a.tear:
-                self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
-            self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
-        pygame.display.update()
+        if self.game_state == "START":
+            self._display_surf.blit(self.background, (0,0))
+            self._display_surf.blit(self.clocktowertear, (720-247,0))
+            self._display_surf.blit(self.clocktowertear,(528,0))
+            self._display_surf.blit(self.start,(0,0))
+        elif self.game_state == "GAME":
+            self.load_level(self.open_matrix(os.path.realpath('level17.txt')))
+            self._display_surf.blit(self.background, (0,0))
+            self._display_surf.blit(self.clocktowertear,(720-247,0))
+            self._display_surf.blit(self.clocktower,(528,0))
+            for a in self.actors:
+                if a.tear:
+                    self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
+                self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
+            pygame.display.update()
    
     def on_cleanup(self):
         pygame.quit()
@@ -109,7 +126,6 @@ class App:
     def on_execute(self):
         if self.on_init() == False:
             self._running = False
-        self.load_level(self.open_matrix(os.path.realpath('level2.txt')))
         while( self._running ):
             for event in pygame.event.get():
                 self.on_event(event)
@@ -209,9 +225,16 @@ class App:
         """
         GEARSIZE3 = pygame.Rect(0, 0, 144, 144)
         info_dic3 = {"lVertGear": (0, 1)}
-        lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear3.png'),
+
+        if clockwise:
+            lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear3.png'),
                                                         GEARSIZE3,
                                                         info_dic3)
+        else:
+            lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear3counter.png'),
+                                                        GEARSIZE3,
+                                                        info_dic3)
+
         lVertGearAnimation.update_frame("lVertGear")
         return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, 24, (self.renderables, self.gears), id="LARGE")
 
@@ -221,7 +244,12 @@ class App:
         """
         GEARSIZE2 = pygame.Rect(0, 0, 96, 96)
         info_dic2 = {"mVertGear": (0, 1)}
-        mVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear2.png'),
+        if clockwise:
+            mVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear2.png'),
+                                                        GEARSIZE2,
+                                                        info_dic2)
+        else:
+            lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear2counter.png'),
                                                         GEARSIZE2,
                                                         info_dic2)
         mVertGearAnimation.update_frame("mVertGear")
@@ -233,9 +261,16 @@ class App:
         """
         GEARSIZE1 = pygame.Rect(0, 0, 48, 48)
         info_dic1 = {"sVertGear": (0, 1)}
-        sVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'),
+
+        if clockwise:
+            sVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1.png'),
                                                         GEARSIZE1,
                                                         info_dic1)
+        else:
+            lVertGearAnimation = animation.Animation(os.path.join('Art', 'verticalGear1counter.png'),
+                                                        GEARSIZE1,
+                                                        info_dic1)
+
         sVertGearAnimation.update_frame("sVertGear")
         return gearActor.GearActor(vector.Vector(x, y), sVertGearAnimation, clockwise, 24, (self.renderables, self.gears), id="SMALL")
 
@@ -249,7 +284,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 24, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 48, (self.renderables, self.ladders))
 
     def get_ladder_top_actor(self, x, y):
         """
@@ -261,7 +296,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 24, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 48, (self.renderables, self.ladders))
 
     def get_wall(self, x,y, type):
         """
@@ -276,7 +311,7 @@ class App:
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
-        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 1, (self.renderables, self.ladders))
+        return actor.Actor(vector.Vector(x, y), sVertGearAnimation, False, 1, (self.renderables, self.walls))
 
 
 
