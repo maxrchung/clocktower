@@ -77,13 +77,15 @@ class App:
         self.clocktower_tear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
         self.start = pygame.image.load(os.path.join('Art', 'start.png')).convert_alpha()
         self.win = pygame.image.load(os.path.join('Art', 'win.png')).convert_alpha()
+        self.lose = pygame.image.load(os.path.join('Art', 'lose.png')).convert_alpha()
+        self.player_marker = pygame.image.load(os.path.join('Art', 'playerMarker.png')).convert_alpha()
         self.minute_hand = clockTower.Hand(self._display_surf)
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
             self._running = False
         elif event.type == pygame.KEYDOWN:
-            if self.game_state == "START" or self.game_state == "WIN":
+            if self.game_state == "START" or self.game_state == "WIN" or self.game_state == "LOSE":
                 if event.key == pygame.K_RETURN:
                     return True
     
@@ -95,8 +97,8 @@ class App:
         elif self.game_state == "GAME":    
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
-                self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
-                self.level_name = self.random_level()
+                self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
+                self.level_name = "test.txt"#self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
@@ -156,7 +158,8 @@ class App:
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
             collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
-            # if a player's standing on something, reset jump
+            collisionDeath = physicsManager.checkCollisionAgainstGroup(self.player, self.walls)
+			# if a player's standing on something, reset jump
             if collisionList:
                 for collider in collisionList:
                     if self.player.rect.centery < collider.rect.centery:
@@ -181,6 +184,9 @@ class App:
             # check if the player got to the top ladder
             if collisionNextLevel:
                 self.game_load = True
+            if collisionDeath:
+                self.game_state = "LOSE"
+            # if there were collisions with player, resolve intersections
 
                 
 
@@ -195,13 +201,15 @@ class App:
             self.game_state = "WIN"
         if self.game_state == "START":
             self._display_surf.blit(self.background, (0,0))
-            self._display_surf.blit(self.clocktowertear, (720-247,0))
-            self._display_surf.blit(self.clocktowertear,(528,0))
             self._display_surf.blit(self.start,(0,0))
+            self._display_surf.blit(self.clocktowertear, (720-247,0))
+            self._display_surf.blit(self.clocktower,(528,0))
+            self._display_surf.blit(self.clocktower,(528,0))
         elif self.game_state == "GAME":
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.clocktowertear,(720-247,0))
             self._display_surf.blit(self.clocktower,(528,0))
+            self._display_surf.blit(self.player_marker, (550, 720 - (100 *self.game_counter)))
             for a in self.actors:
                 if a.tear:
                     self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
@@ -209,10 +217,15 @@ class App:
             self.minute_hand.draw()
         elif self.game_state == "WIN":
             self._display_surf.blit(self.background, (0,0))
-            self._display_surf.blit(self.clocktowertear, (720-247,0))
-            self._display_surf.blit(self.clocktowertear,(528,0))
             self._display_surf.blit(self.win,(0,0,))
-
+            self._display_surf.blit(self.clocktowertear, (720-247,0))
+            self._display_surf.blit(self.clocktower,(528,0))
+            self._display_surf.blit(self.player_marker, (550, 720 - (100 *self.game_counter)))
+        elif self.game_state == "LOSE":
+            self._display_surf.blit(self.background, (0,0))
+            self._display_surf.blit(self.lose,(0,0,))
+            self._display_surf.blit(self.clocktowertear, (720-247,0))
+            self._display_surf.blit(self.clocktower,(528,0))
         pygame.display.update()
    
     def on_cleanup(self):
@@ -233,6 +246,7 @@ class App:
 
     def random_level(self):
         random_item = random.choice(self.LEVEL_LIST)
+        self.LEVEL_LIST.remove(random_item)
         return str(random_item)
 
     def load_level(self, level_matrix):
@@ -407,12 +421,17 @@ class App:
         """
         :return: a wall
         """
+
         if type:
-            LADDERSIZE = pygame.Rect(0, 0, 1, 720)
+            LADDERSIZE = pygame.Rect(0, 0, 48, 48)
+            info_dic1 = {"sVertGear": (0, 1)}
+            sVertGearAnimation = animation.Animation(os.path.join('Art', 'wallLeftRight.png'),
+                                                        LADDERSIZE,
+                                                        info_dic1)
         else:
-            LADDERSIZE = pygame.Rect(0, 0, 720, 1)
-        info_dic1 = {"sVertGear": (0, 1)}
-        sVertGearAnimation = animation.Animation(os.path.join('Art', 'ladderTop.png'),
+            LADDERSIZE = pygame.Rect(0, 0, 48, 48)
+            info_dic1 = {"sVertGear": (0, 1)}
+        sVertGearAnimation = animation.Animation(os.path.join('Art', 'wallTopBottom.png'),
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
