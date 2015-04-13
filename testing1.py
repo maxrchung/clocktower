@@ -132,10 +132,6 @@ class App:
                                 # TOPRIGHT
                                 self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0).get_norm()
                         else: 
-                            # kill player if touched both cc and clockwise
-                            if touchedClockwise:
-                                self.game_state = "LOSE"
-                                return
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, 2.0).get_norm()
@@ -144,6 +140,10 @@ class App:
                                 self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0).get_norm()
                     # COUNTERCLOCKWISE
                     else:
+                        # kill player if touched both cc and clockwise
+                            if touchedClockwise:
+                                self.game_state = "LOSE"
+                                return
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
