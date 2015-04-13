@@ -53,9 +53,11 @@ class App:
 
     def on_init(self):
         pygame.init()
+        icon = pygame.image.load('Art/iloveit.png')
+        pygame.display.set_icon(icon)
+        pygame.display.set_caption("Minutes to Midnight")
         self._display_surf = pygame.display.set_mode(self.size, pygame.SRCALPHA)
         self._running = True
-        pygame.display.set_caption("Minutes to Midnight")
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
