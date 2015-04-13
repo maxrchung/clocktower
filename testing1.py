@@ -216,12 +216,14 @@ class App:
                 self._display_surf.blit(a.image, (a.pos.x, a.pos.y))
             self.minute_hand.draw()
         elif self.game_state == "WIN":
+            #self.sound.playSoundEffect('Level Completed.wav')
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.win,(0,0,))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
             self._display_surf.blit(self.clocktower,(528,0))
             self._display_surf.blit(self.player_marker, (550, 720 - (100 *self.game_counter)))
         elif self.game_state == "LOSE":
+            #self.sound.playMusic('Clock Strikes Twelve.mp3', 1)
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.lose,(0,0,))
             self._display_surf.blit(self.clocktowertear, (720-247,0))
@@ -235,7 +237,6 @@ class App:
         if self.on_init() == False:
             self._running = False
         while( self._running ):
-            print(self.game_state)
             for event in pygame.event.get():
                 if self.on_event(event):
                     self.game_state = "GAME"
