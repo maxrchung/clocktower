@@ -23,7 +23,7 @@ class App:
         self.box_size = 48
         self.LEVEL_LIST = ['level1.txt', 'level2.txt', 'level3.txt', 'level4.txt','level5.txt', 
 'level6.txt', 'level7.txt','level8.txt','level9.txt','level10.txt','level11.txt',
-'level12.txt','level13.txt','level.14txt','level15.txt','level16.txt','level17.txt',
+'level12.txt','level13.txt','level14.txt','level15.txt','level16.txt','level17.txt',
 'level18.txt']
         self.game_state = "START"
         self.game_load = True
