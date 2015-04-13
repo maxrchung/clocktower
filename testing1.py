@@ -75,6 +75,7 @@ class App:
         self.clocktower_tear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
         self.start = pygame.image.load(os.path.join('Art', 'start.png')).convert_alpha()
         self.win = pygame.image.load(os.path.join('Art', 'win.png')).convert_alpha()
+        self.player_marker = pygame.image.load(os.path.join('Art', 'playerMarker.png')).convert_alpha()
         self.minute_hand = clockTower.Hand(self._display_surf)
 
     def on_event(self, event):
@@ -92,9 +93,9 @@ class App:
             pass
         elif self.game_state == "GAME":    
             if self.game_load:
-                self.player = self.get_player_actor(240,540,-30)
+                self.player = self.get_player_actor(240,0,-30)#self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
-                self.level_name = 'testing.txt'#self.random_level()
+                self.level_name = self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
@@ -141,6 +142,7 @@ class App:
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.clocktowertear,(720-247,0))
             self._display_surf.blit(self.clocktower,(528,0))
+            self._display_surf.blit(self.player_marker, (550, 720 - (100 *self.game_counter)))
             for a in self.actors:
                 if a.tear:
                     self._display_surf.blit(a.tear, (a.tearpos[0], a.tearpos[1]))
