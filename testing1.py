@@ -86,8 +86,10 @@ class App:
             pass
         elif self.game_state == "GAME":    
             if self.game_load:
+                self.level_name = self.random_level()
+                print(self.level_name)
                 self.game_counter += 1
-                self.load_level(self.open_matrix(os.path.realpath(self.random_level())))
+                self.load_level(self.open_matrix(os.path.realpath(self.level_name)))
                 self.game_load = False
             # update inputs
             self.player.update()
