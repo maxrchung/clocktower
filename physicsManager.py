@@ -21,7 +21,7 @@ def resolveIntersection(actor, colliders):
     actorVec = vector.Vector(actor.center[0], actor.center[1])
     for collider in colliders:
         colliderVec = vector.Vector(collider.center[0], collider.center[1])
-        increment += actorVec - colliderVec
+        increment += actorVec - colliderVec 
     increment = increment.get_norm()
     # while the actor is colliding, move it until it isn't colliding
     if increment.mag == 0:
