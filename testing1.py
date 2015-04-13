@@ -111,9 +111,22 @@ class App:
                 a.updatePhysics(self.clock.get_time())
             # check for collisions with player against gears group
             collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
+            # move player if he's touching a gear
+            if collisionList:
+                self.player.accels['gear'] = 10.0
+                for gearCollide in collisionList:
+                    if gearCollide.clockwise:
+                        self.player.targetVelocities['gear'] = vector.Vector(2.0, None)
+                    else:
+                        self.player.targetVelocities['gear'] = vector.Vector(-2.0, None)
+            else:
+                self.player.accels['gear'] = 0.0
+                self.player.targetVelocities['gear'] = vector.Vector(None, None)
+            # check more collisions
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
             collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
+            # if a player's standing on something, reset jump
             if collisionList:
                 self.player.jumping = False
                 physicsManager.resolveIntersection(self.player, collisionList)
