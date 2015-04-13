@@ -48,7 +48,7 @@ class App:
         pygame.init()
         self._display_surf = pygame.display.set_mode(self.size, pygame.SRCALPHA)
         self._running = True
-        pygame.display.set_caption("Gears to Midnight")
+        pygame.display.set_caption("Minutes to Midnight")
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders
