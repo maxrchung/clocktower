@@ -3,9 +3,9 @@ import actor
 import os
 
 class GearActor(actor.Actor):
-    def __init__(self, pos, animation, clockwise, groups, id=None):
+    def __init__(self, pos, animation, clockwise, radius, groups, id=None):
         # Call parent constructor
-        actor.Actor.__init__(self, pos, animation, False, groups)
+        actor.Actor.__init__(self, pos, animation, False, radius, groups)
         self.original_image = self.image.copy()
         self.current_angle = 0
         self.clockwise = clockwise
