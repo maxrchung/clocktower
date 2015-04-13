@@ -53,6 +53,7 @@ class Hand:
 
         self.image = rotated_image
         self.mask = pygame.mask.from_surface(self.image)
+        return '' 
 
     def draw(self):
         #self.surface.blit(self.background, (0,0))

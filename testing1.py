@@ -93,7 +93,7 @@ class App:
             pass
         elif self.game_state == "GAME":    
             if self.game_load:
-                self.player = self.get_player_actor(240,0,-30)#self.get_player_actor(240,540,-30)
+                self.player = self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
                 self.level_name = self.random_level()
                 print(self.level_name)
@@ -115,11 +115,14 @@ class App:
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
             collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
+            collisionDeath = physicsManager.checkCollisionAgainstGroup(self.player, self.walls)
             if collisionList:
                 self.player.jumping = False
                 physicsManager.resolveIntersection(self.player, collisionList)
             if collisionNextLevel:
                 self.game_load = True
+            if collisionDeath:
+                self.game_state = "WIN"
             # if there were collisions with player, resolve intersections
 
                 
@@ -135,9 +138,9 @@ class App:
             self.game_state = "WIN"
         if self.game_state == "START":
             self._display_surf.blit(self.background, (0,0))
-            self._display_surf.blit(self.clocktowertear, (720-247,0))
-            self._display_surf.blit(self.clocktowertear,(528,0))
             self._display_surf.blit(self.start,(0,0))
+            self._display_surf.blit(self.clocktowertear, (720-247,0))
+            self._display_surf.blit(self.clocktower,(528,0))
         elif self.game_state == "GAME":
             self._display_surf.blit(self.background, (0,0))
             self._display_surf.blit(self.clocktowertear,(720-247,0))
@@ -150,10 +153,9 @@ class App:
             self.minute_hand.draw()
         elif self.game_state == "WIN":
             self._display_surf.blit(self.background, (0,0))
-            self._display_surf.blit(self.clocktowertear, (720-247,0))
-            self._display_surf.blit(self.clocktowertear,(528,0))
             self._display_surf.blit(self.win,(0,0,))
-
+            self._display_surf.blit(self.clocktowertear, (720-247,0))
+            self._display_surf.blit(self.clocktower,(528,0))
         pygame.display.update()
    
     def on_cleanup(self):
@@ -342,7 +344,7 @@ class App:
         else:
             LADDERSIZE = pygame.Rect(0, 0, 720, 1)
         info_dic1 = {"sVertGear": (0, 1)}
-        sVertGearAnimation = animation.Animation(os.path.join('Art', 'ladderTop.png'),
+        sVertGearAnimation = animation.Animation(os.path.join('Art', 'wall.png'),
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
