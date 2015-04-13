@@ -96,6 +96,7 @@ class App:
         elif self.game_state == "GAME":    
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
+                self.actors = []
                 self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
                 self.level_name = self.random_level()
                 self.game_counter += 1
