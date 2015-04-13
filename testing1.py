@@ -178,7 +178,7 @@ class App:
             if self.player.rect.x > 480:
                 self.player.moveActor(480 - self.player.rect.x, 0)
             if self.player.rect.bottom > self.height:
-                self.game_state = "DEATH"
+                collisionDeath = True
                 #deathActor = self.get_death_actor(self.player.pos.x, self.player.pos.y, -30)
                 #self.loop_death(deathActor)
             # check if the player got to the top ladder
@@ -332,15 +332,14 @@ class App:
         return actor.Actor(vector.Vector(x, y), deathAnimation, False, 120, (self.renderables))
 
     def loop_death(self, death_actor):
-        while True:
-            count = 0
-            for i in range(9):
-                if count == 10:
-                    death_actor.get_current_frame()
-                    death_actor.update_current_frame()
-                    count = 0
-                else:
-                    count += 1
+        count = 0
+        for i in range(9):
+            if count == 10:
+                death_actor.get_current_frame()
+                death_actor.update_current_frame()
+                count = 0
+            else:
+                count += 1
 
     def get_lVertGearActor(self, x, y, clockwise):
         """
