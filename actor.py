@@ -23,7 +23,7 @@ class Actor(pygame.sprite.Sprite):
         self.velocity = vector.Vector(0.0,0.0)
         if useGravity:
             self.accels['gravity'] = 4.0
-            self.targetVelocities['gravity'] = vector.Vector(None, -12.0)
+            self.targetVelocities['gravity'] = vector.Vector(None, -8.0)
 
         # Will be specified by the inherited classes
         self.tear = None

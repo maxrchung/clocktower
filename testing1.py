@@ -67,7 +67,7 @@ class App:
         self.clocktower = pygame.image.load(os.path.join('Art', 'clocktower.png')).convert_alpha()
         self.clocktower_tear = pygame.image.load(os.path.join('Art', 'clockTowerTear.png')).convert_alpha()
         self.start = pygame.image.load(os.path.join('Art', 'start.png')).convert_alpha()
-        self.player = self.get_player_actor(236,624,-40)
+        self.player = self.get_player_actor(236,624,-30)
         self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
         #self.minute_hand = clockTower.Hand(self._display_surf)
 
@@ -228,7 +228,7 @@ class App:
                                                     info_dic,
                                                     scale)
         deathAnimation.update_frame("deathLeft")
-        return actor.Actor(vector.Vector(x, y), deathAnimation, False, (self.renderables))
+        return actor.Actor(vector.Vector(x, y), deathAnimation, False, 120, (self.renderables))
 
     def get_lVertGearActor(self, x, y, clockwise):
         """
@@ -245,7 +245,7 @@ class App:
                                                         GEARSIZE3,
                                                         info_dic3)
         lVertGearAnimation.update_frame("lVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, 24, (self.renderables, self.gears), id="LARGE")
+        return gearActor.GearActor(vector.Vector(x, y), lVertGearAnimation, clockwise, 72, (self.renderables, self.gears), id="LARGE")
 
     def get_mVertGearActor(self, x, y, clockwise):
         """
@@ -262,7 +262,7 @@ class App:
                                                         GEARSIZE2,
                                                         info_dic2)
         mVertGearAnimation.update_frame("mVertGear")
-        return gearActor.GearActor(vector.Vector(x, y), mVertGearAnimation, clockwise, 24, (self.renderables, self.gears), id="MEDIUM")
+        return gearActor.GearActor(vector.Vector(x, y), mVertGearAnimation, clockwise, 48, (self.renderables, self.gears), id="MEDIUM")
 
     def get_sVertGearActor(self, x, y, clockwise):
         """
