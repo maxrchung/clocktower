@@ -266,7 +266,7 @@ class App:
                                                     DEATHSIZE,
                                                     info_dic,
                                                     scale)
-        deathAnimation.update_frame("deathLeft")
+        deathAnimation.update_frame("death" + self.player.curr_orientation)
         return actor.Actor(vector.Vector(x, y), deathAnimation, False, 120, (self.renderables))
 
     def get_lVertGearActor(self, x, y, clockwise):
