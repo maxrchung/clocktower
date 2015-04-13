@@ -168,6 +168,18 @@ class App:
                 physicsManager.resolveIntersection(self.player, collisionList)
             else:
                 self.player.accels['gravity'] = 4.0
+            # prevent player from leaving top left bottom
+            if self.player.rect.x < 0:
+                self.player.moveActor(-1*self.player.rect.x, 0)
+            if self.player.rect.y < 0:
+                self.player.moveActor(0, -1*self.player.rect.y)
+            if self.player.rect.x > 480:
+                self.player.moveActor(480 - self.player.rect.x, 0)
+            if self.player.rect.bottom > self.height:
+                self.game_state = "DEATH"
+                #deathActor = self.get_death_actor(self.player.pos.x, self.player.pos.y, -30)
+                #self.loop_death(deathActor)
+            # check if the player got to the top ladder
             if collisionNextLevel:
                 self.game_load = True
             if collisionDeath:
@@ -317,7 +329,7 @@ class App:
         deathAnimation.update_frame("death" + self.player.curr_orientation)
         return actor.Actor(vector.Vector(x, y), deathAnimation, False, 120, (self.renderables))
 
-    def loop_death(self, player_actor, death_actor):
+    def loop_death(self, death_actor):
         while True:
             count = 0
             for i in range(9):
