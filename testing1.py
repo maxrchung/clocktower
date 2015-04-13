@@ -165,9 +165,19 @@ class App:
                 physicsManager.resolveIntersection(self.player, collisionList)
             else:
                 self.player.accels['gravity'] = 4.0
+            # prevent player from leaving top left bottom
+            if self.player.rect.x < 0:
+                self.player.moveActor(-1*self.player.rect.x, 0)
+            if self.player.rect.y < 0:
+                self.player.moveActor(0, -1*self.player.rect.y)
+            if self.player.rect.x > 480:
+                self.player.moveActor(480 - self.player.rect.x, 0)
+            if self.player.rect.y > self.height:
+                deathActor = self.get_death_actor(self.player.pos[0], self.player.pos[1], -30)
+                self.loop_death(deathActor)
+            # check if the player got to the top ladder
             if collisionNextLevel:
                 self.game_load = True
-            # if there were collisions with player, resolve intersections
 
                 
 
