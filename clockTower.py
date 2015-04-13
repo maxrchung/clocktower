@@ -56,5 +56,5 @@ class Hand:
 
     def draw(self):
         #self.surface.blit(self.background, (0,0))
-        self.surface.blit(self.image, (608-38, 93))
-        self.surface.blit(self.hour_image, (608-38, 93))
+        self.surface.blit(self.image, (608-40, 93))
+        self.surface.blit(self.hour_image, (608-42, 93))

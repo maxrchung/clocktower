@@ -94,7 +94,7 @@ class App:
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
                 self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
-                self.level_name = 'testing.txt'#self.random_level()
+                self.level_name = self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
