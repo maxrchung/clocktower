@@ -94,8 +94,8 @@ class App:
         elif self.game_state == "GAME":    
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
-                self.actors = [self.player, self.get_wall(0,0, True), self.get_wall(0,0, False), self.get_wall(528,0, False)]
-                self.level_name = self.random_level()
+                self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
+                self.level_name = #self.random_level()
                 print(self.level_name)
                 self.game_counter += 1
                 print(self.game_counter)
@@ -339,12 +339,17 @@ class App:
         """
         :return: a wall
         """
+
         if type:
-            LADDERSIZE = pygame.Rect(0, 0, 1, 720)
+            LADDERSIZE = pygame.Rect(0, 0, 48, 48)
+            info_dic1 = {"sVertGear": (0, 1)}
+            sVertGearAnimation = animation.Animation(os.path.join('Art', 'wallLeftRight.png'),
+                                                        LADDERSIZE,
+                                                        info_dic1)
         else:
-            LADDERSIZE = pygame.Rect(0, 0, 720, 1)
-        info_dic1 = {"sVertGear": (0, 1)}
-        sVertGearAnimation = animation.Animation(os.path.join('Art', 'wall.png'),
+            LADDERSIZE = pygame.Rect(0, 0, 48, 48)
+            info_dic1 = {"sVertGear": (0, 1)}
+        sVertGearAnimation = animation.Animation(os.path.join('Art', 'wallTopBottom.png'),
                                                         LADDERSIZE,
                                                         info_dic1)
         sVertGearAnimation.update_frame("sVertGear")
