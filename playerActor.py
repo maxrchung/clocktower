@@ -59,7 +59,7 @@ class PlayerActor(actor.Actor):
     def doJump(self):
         if self.input.SPACE_DOWN and not self.jumping:
             self.jumping = True
-            self.velocity.y = 5.0
+            self.velocity.y = 6.0
             self.sound.playSoundEffect("Jumping.wav")
         else:
             self.targetVelocities['jump'] = actor.vector.Vector(None, None)
