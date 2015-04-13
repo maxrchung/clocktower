@@ -3,7 +3,7 @@ import vector
 import animation
 from pygame.locals import *
 class Actor(pygame.sprite.Sprite):
-    def __init__(self, pos, animation, useGravity, groups):
+    def __init__(self, pos, animation, useGravity, radius, groups):
         # Call the parent class (Sprite) constructor
         pygame.sprite.Sprite.__init__(self)
         # Set a position for the Actor
@@ -14,10 +14,9 @@ class Actor(pygame.sprite.Sprite):
         self.image = animation.get_current_frame()
         self.rect = self.image.get_rect()
         self.rect.move_ip(pos.x, pos.y)
-        self.mask = animation.get_current_mask()
+        self.center = (self.rect.width / 2.0, self.rect.height / 2.0)
+        self.radius = radius
 
-        # use pygame.sprite.collide_mask()
-        # usage: collide_mask(SpriteLeft, SpriteRight) -> point
         # Set some default forces and velocity
         self.accels = {}
         self.targetVelocities = {}
@@ -52,4 +51,3 @@ class Actor(pygame.sprite.Sprite):
     def updateAnimation(self, actor_state):
         self.animator.update_frame(actor_state)
         self.image = self.animator.get_current_frame()
-        self.mask = self.animator.get_current_mask()
