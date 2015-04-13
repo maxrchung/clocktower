@@ -11,6 +11,7 @@ import os
 import pygame
 import random
 import tile_loader
+import soundManager
  
 class App:
     def __init__(self):
@@ -36,6 +37,10 @@ class App:
         self.ladders = pygame.sprite.Group()
         self.ladders1 = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
+        # Playing Sound Effects
+        self.sound = soundManager.SoundManager()
+        self.sound.playMusic("Tower Climb.mp3", -1)
+        self.sound.setVolume(0.25)
     
     def draw_grid(surface):
         for i in range(1,H_BOXES):
@@ -49,7 +54,7 @@ class App:
         pygame.init()
         self._display_surf = pygame.display.set_mode(self.size, pygame.SRCALPHA)
         self._running = True
-        pygame.display.set_caption("Gears to Midnight")
+        pygame.display.set_caption("Minutes to Midnight")
         # create actors
         # 0: player actor. uses gravity, part of renderables
         # 1: static actor. doesn't use gravity, part of renderables and staticColliders

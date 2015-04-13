@@ -16,7 +16,7 @@ class Actor(pygame.sprite.Sprite):
         self.image = animation.get_current_frame()
         self.rect = self.image.get_rect()
         self.rect.move_ip(pos.x, pos.y)
-        self.center = (self.rect.width / 2.0, self.rect.height / 2.0)
+        self.center = self.rect.center
         self.radius = radius
 
         # Set some default forces and velocity
