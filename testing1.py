@@ -304,11 +304,11 @@ class App:
         deathAnimation.update_frame("death" + self.player.curr_orientation)
         return actor.Actor(vector.Vector(x, y), deathAnimation, False, 120, (self.renderables))
 
-    def loop_death(self, player_actor, death_actor):
+    def loop_death(self, death_actor):
         while True:
             count = 0
             for i in range(9):
-                if count == 10
+                if count == 10:
                     death_actor.get_current_frame()
                     death_actor.update_current_frame()
                     count = 0
