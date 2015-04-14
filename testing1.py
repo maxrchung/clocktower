@@ -22,7 +22,7 @@ class App:
         self.H_BOXES = 11
         self.V_BOXES = 15
         self.box_size = 48
-        self.LEVEL_LIST = ['new_level1.txt', 'new_level2.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level6.txt', 'level10.txt', 'level14.txt']
+        self.LEVEL_LIST = [ 'new_level5.txt','new_level3.txt' 'new_level4.txt', 'new_level1.txt', 'new_level2.txt', 'level2.txt', 'level3.txt', 'level4.txt', 'level6.txt', 'level10.txt', 'level14.txt']
         self.newlevel_list = []
         self.game_state = "START"
         self.game_load = True
