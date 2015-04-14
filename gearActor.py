@@ -1,6 +1,9 @@
 import pygame
 import actor
 import os
+import vector
+import tempTrig
+import random
 
 class GearActor(actor.Actor):
     def __init__(self, pos, animation, clockwise, radius, groups, id=None):
@@ -19,11 +22,12 @@ class GearActor(actor.Actor):
         elif id == "LARGE":
             self.tearpos = (self.pos.x - 24, self.pos.y - 24)
             self.tear = pygame.image.load(os.path.join('Art', 'verticalGear3Tear.png')).convert_alpha()
+        self.OFFSET = random.randint(1, 4)
+        if self.clockwise:
+            self.OFFSET *= -1
+        self.offsetVector = (vector.Vector(tempTrig.get_center_x(radius, self.OFFSET), tempTrig.get_center_y(radius, self.OFFSET)) * self.OFFSET).get_norm()
 
     def rotateGear(self):
-        OFFSET = -3
-        if not self.clockwise:
-            OFFSET *= -1
         if self.timer == 1:
             self.timer = 0
             if self.current_angle < 360:
@@ -35,7 +39,7 @@ class GearActor(actor.Actor):
 
                 self.image = rotated_image
                 self.mask = pygame.mask.from_surface(self.image)
-                self.current_angle += OFFSET
+                self.current_angle += self.OFFSET
             else:
                 self.image = self.original_image.copy()
                 self.current_angle = 0

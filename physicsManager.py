@@ -39,4 +39,7 @@ def resolveIntersection(actor, colliders):
             actor.moveActor(increment.x, increment.y)
         else:
             colliding = False
+    # reverse the last increment to keep minimum distance while still colliding
+    increment *= -1
+    actor.moveActor(increment.x, increment.y)
     

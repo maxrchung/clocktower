@@ -119,6 +119,22 @@ class App:
             if collisionList:
                 self.player.accels['gear'] = 10.0
                 for gearCollide in collisionList:
+                    if not self.player.jumping:
+                        # TURN PLAYER AROUND GEAR
+                        if self.player.rect.centery < gearCollide.rect.centery:
+                            if self.player.rect.centerx < gearCollide.rect.centerx:
+                                # TOPLEFT
+                                self.player.targetVelocities['gear'] = -1*gearCollide.offsetVector
+                            else:
+                                # TOPRIGHT
+                                self.player.targetVelocities['gear'] = vector.Vector(-1*gearCollide.offsetVector.x, gearCollide.offsetVector.y)
+                        else: 
+                            if self.player.rect.centerx < gearCollide.rect.centerx:
+                                # BOTTOMLEFT
+                                self.player.targetVelocities['gear'] = vector.Vector(gearCollide.offsetVector.x, -1*gearCollide.offsetVector.y)
+                            else:
+                                # BOTTOMRIGHT
+                                self.player.targetVelocities['gear'] = gearCollide.offsetVector
                     # CLOCKWISE
                     if gearCollide.clockwise:
                         # kill player if touched both cc and clockwise
@@ -126,20 +142,6 @@ class App:
                             self.game_state = "LOSE"
                             return
                         touchedClockwise = True
-                        if self.player.rect.centery < gearCollide.rect.centery:
-                            if self.player.rect.centerx < gearCollide.rect.centerx:
-                                # TOPLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
-                            else:
-                                # TOPRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
-                        else: 
-                            if self.player.rect.centerx < gearCollide.rect.centerx:
-                                # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
-                            else:
-                                # BOTTOMRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
                     # COUNTERCLOCKWISE
                     else:
                         # kill player if touched both cc and clockwise
@@ -147,20 +149,6 @@ class App:
                             self.game_state = "LOSE"
                             return
                         touchedCounterClockwise = True
-                        if self.player.rect.centery < gearCollide.rect.centery:
-                            if self.player.rect.centerx < gearCollide.rect.centerx:
-                                # TOPLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
-                            else:
-                                # TOPRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
-                        else:
-                            if self.player.rect.centerx < gearCollide.rect.centerx:
-                                # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
-                            else:
-                                # BOTTOMRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
             else:
                 self.player.accels['gear'] = 0.0
                 self.player.targetVelocities['gear'] = vector.Vector(None, None)
@@ -173,7 +161,7 @@ class App:
 	    # if a player's standing on something, reset jump
             if collisionList:
                 for collider in collisionList:
-                    if self.player.rect.bottom < collider.rect.bottom:
+                    if self.player.rect.centery < collider.rect.bottom:
                         self.player.jumping = False
                         self.player.accels['gravity'] = 0.0
                         self.player.velocity.y = 0.0
