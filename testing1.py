@@ -22,8 +22,7 @@ class App:
         self.H_BOXES = 11
         self.V_BOXES = 15
         self.box_size = 48
-        self.LEVEL_LIST = ['level2.txt', 'level3.txt', 'level4.txt', 
-'level6.txt','level8.txt','level9.txt','level10.txt','level13.txt','level14.txt','level17.txt', 'level22.txt']
+        self.LEVEL_LIST = ['level2.txt', 'level3.txt', 'level4.txt', 'level6.txt', 'level10.txt', 'level14.txt']
         self.newlevel_list = []
         self.game_state = "START"
         self.game_load = True
@@ -36,7 +35,7 @@ class App:
         self.gears = pygame.sprite.Group()
         self.ladders = pygame.sprite.Group()
         self.ladders1 = pygame.sprite.Group()
-        self.walls = pygame.sprite.Group()
+        #self.walls = pygame.sprite.Group()
         # Playing Sound Effects
         self.sound = soundManager.SoundManager()
         self.sound.playMusic("Tower Climb.mp3", -1)
@@ -96,8 +95,7 @@ class App:
         elif self.game_state == "GAME":    
             if self.game_load:
                 self.player = self.get_player_actor(240,540,-30)
-                self.actors = []
-                self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
+                #self.actors = [self.player, self.get_wall(0,0, False), self.get_wall(0,0, True), self.get_wall(528,0, True)]
                 self.level_name = self.random_level()
                 self.game_counter += 1
                 self.load_level(self.open_matrix(os.path.realpath(self.level_name)))
@@ -117,46 +115,52 @@ class App:
             collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
             # move player if he's touching a gear
             touchedClockwise = False
+            touchedCounterClockwise = False
             if collisionList:
                 self.player.accels['gear'] = 10.0
                 for gearCollide in collisionList:
                     # CLOCKWISE
                     if gearCollide.clockwise:
+                        # kill player if touched both cc and clockwise
+                        if touchedCounterClockwise:
+                            self.game_state = "LOSE"
+                            return
                         touchedClockwise = True
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
                             else:
                                 # TOPRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
                         else: 
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
                             else:
                                 # BOTTOMRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
                     # COUNTERCLOCKWISE
                     else:
                         # kill player if touched both cc and clockwise
-                        #if touchedClockwise:
-                            #self.game_state = "LOSE"
-                            #return
+                        if touchedClockwise:
+                            self.game_state = "LOSE"
+                            return
+                        touchedCounterClockwise = True
                         if self.player.rect.centery < gearCollide.rect.centery:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # TOPLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, -1.0)
                             else:
                                 # TOPRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(-1.0, 1.0)
                         else:
                             if self.player.rect.centerx < gearCollide.rect.centerx:
                                 # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, -1.0)
                             else:
                                 # BOTTOMRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0).get_norm()
+                                self.player.targetVelocities['gear'] = vector.Vector(1.0, 1.0)
             else:
                 self.player.accels['gear'] = 0.0
                 self.player.targetVelocities['gear'] = vector.Vector(None, None)
@@ -164,7 +168,8 @@ class App:
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
             collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
             collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
-            collisionDeath = physicsManager.checkCollisionAgainstGroup(self.player, self.walls)
+            #collisionDeath = physicsManager.checkCollisionAgainstGroup(self.player, self.walls)
+            collisionDeath = False
 	    # if a player's standing on something, reset jump
             if collisionList:
                 for collider in collisionList:
@@ -177,13 +182,13 @@ class App:
             else:
                 self.player.accels['gravity'] = 4.0
             # prevent player from leaving top left bottom
-            if self.player.rect.x < 0:
-                self.player.moveActor(-1*self.player.rect.x, 0)
-            if self.player.rect.y < 0:
-                self.player.moveActor(0, -1*self.player.rect.y)
+            if self.player.rect.centerx < 0:
+                self.player.moveTo(-1*self.player.rect.centerx, self.player.pos.y)
+            if self.player.rect.centery < 0:
+                self.player.moveTo(self.player.pos.x, self.player.rect.centery)
             if self.player.rect.x > 480:
-                self.player.moveActor(480 - self.player.rect.x, 0)
-            if self.player.rect.bottom > self.height:
+                self.player.moveTo(480, self.player.pos.y)
+            if self.player.rect.center[1] > self.height:
                 collisionDeath = True
                 #deathActor = self.get_death_actor(self.player.pos.x, self.player.pos.y, -30)
                 #self.loop_death(deathActor)
@@ -266,12 +271,14 @@ class App:
         return str(random_item)
 
     def load_level(self, level_matrix):
+        self.actors = [self.player]
+        self.gears.empty()
+        self.ladders.empty()
+        self.ladders1.empty()
         for i in level_matrix:
             for x in range(len(i)):
                 actor = self.get_object(level_matrix.index(i),x, i[x])
-                if actor == None:
-                    pass
-                else:
+                if not actor == None:
                     self.actors.append(actor)
    
     def open_matrix(self, path):

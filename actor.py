@@ -61,6 +61,13 @@ class Actor(pygame.sprite.Sprite):
         self.center = self.rect.center
         #self.rect.move_ip(x, y)
 
+    def moveTo(self, x, y):
+        self.pos.x = x
+        self.pos.y = y
+        self.rect.x = x
+        self.rect.y = y
+        self.center = self.rect.center
+
     def updateAnimation(self, actor_state):
         self.animator.update_frame(actor_state)
         self.image = self.animator.get_current_frame()
