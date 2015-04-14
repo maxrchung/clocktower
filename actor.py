@@ -49,7 +49,8 @@ class Actor(pygame.sprite.Sprite):
                 # get acceleration and scale by time since last update
                 increment = self.accels[k]/timeSinceLastUpdate
                 # then move towards the target velocity
-                self.velocity.moveTowards(self.targetVelocities[k], increment)
+                if k in self.targetVelocities:
+                    self.velocity.moveTowards(self.targetVelocities[k], increment)
             # update the current position based on velocity
             self.moveActor(self.velocity.x, self.velocity.y)
 
