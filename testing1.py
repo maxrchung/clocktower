@@ -208,7 +208,7 @@ class App:
                     if not self.deathAnimationTimer % 2:
                         self.player.updateAnimation('death' + self.deathOrientation)
                     self.deathAnimationTimer += 1
-                    if self.deathAnimationTimer > 18:
+                    if self.deathAnimationTimer > 14:
                         self.doneDying = True
                 # we are finished dying. Clear flags
                 else:
