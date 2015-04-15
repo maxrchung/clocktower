@@ -78,6 +78,9 @@ class App:
         self.lose = pygame.image.load(os.path.join('Art', 'lose.png')).convert_alpha()
         self.player_marker = pygame.image.load(os.path.join('Art', 'playerMarker.png')).convert_alpha()
         self.minute_hand = clockTower.Hand(self._display_surf)
+        self.dead = False
+        self.dying = False
+        self.doneDying = True
 
     def on_event(self, event):
         if event.type == pygame.QUIT:
@@ -100,94 +103,119 @@ class App:
                 self.game_counter += 1
                 self.load_level(self.open_matrix(os.path.realpath(self.level_name)))
                 self.game_load = False
-            # update inputs
-            self.player.update()
-            if self.minute_hand.update():
-                print('are we 5 minutes')
-                self.game_state = "END"
-            # spin gears
-            for gear in self.gears.sprites():
-                gear.rotateGear()
-            # update physics for each actor in the game
-            for a in self.actors:
-                a.updatePhysics(self.clock.get_time())
-            # check for collisions with player against gears group
-            collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
-            # move player if he's touching a gear
-            touchedClockwise = False
-            touchedCounterClockwise = False
-            if collisionList:
-                self.player.accels['gear'] = 10.0
-                for gearCollide in collisionList:
-                    if not self.player.jumping:
-                        # TURN PLAYER AROUND GEAR
-                        if self.player.rect.centery < gearCollide.rect.centery:
-                            if self.player.rect.centerx < gearCollide.rect.centerx:
-                                # TOPLEFT
-                                self.player.targetVelocities['gear'] = -1*gearCollide.offsetVector
-                            else:
-                                # TOPRIGHT
-                                self.player.targetVelocities['gear'] = vector.Vector(-1*gearCollide.offsetVector.x, gearCollide.offsetVector.y)
-                        else: 
-                            if self.player.rect.centerx < gearCollide.rect.centerx:
-                                # BOTTOMLEFT
-                                self.player.targetVelocities['gear'] = vector.Vector(gearCollide.offsetVector.x, -1*gearCollide.offsetVector.y)
-                            else:
-                                # BOTTOMRIGHT
-                                self.player.targetVelocities['gear'] = gearCollide.offsetVector
-                    # CLOCKWISE
-                    if gearCollide.clockwise:
-                        # kill player if touched both cc and clockwise
-                        if touchedCounterClockwise:
-                            self.game_state = "LOSE"
-                            return
-                        touchedClockwise = True
-                    # COUNTERCLOCKWISE
-                    else:
-                        # kill player if touched both cc and clockwise
-                        if touchedClockwise:
-                            self.game_state = "LOSE"
-                            return
-                        touchedCounterClockwise = True
+                self.dead = False
+            # IF PLAYER IS ALIVE
+            if not self.dead:
+                # update inputs
+                self.player.update()
+                if self.minute_hand.update():
+                    print('are we 5 minutes')
+                    self.game_state = "END"
+                # spin gears
+                for gear in self.gears.sprites():
+                    gear.rotateGear()
+                # update physics for each actor in the game
+                for a in self.actors:
+                    a.updatePhysics(self.clock.get_time())
+                # check for collisions with player against gears group
+                collisionList = physicsManager.checkCollisionAgainstGroup(self.player, self.gears)
+                # move player if he's touching a gear
+                touchedClockwise = False
+                touchedCounterClockwise = False
+                if collisionList:
+                    self.player.accels['gear'] = 10.0
+                    for gearCollide in collisionList:
+                        if not self.player.jumping:
+                            # TURN PLAYER AROUND GEAR
+                            if self.player.rect.centery < gearCollide.rect.centery:
+                                if self.player.rect.centerx < gearCollide.rect.centerx:
+                                    # TOPLEFT
+                                    self.player.targetVelocities['gear'] = -1*gearCollide.offsetVector
+                                else:
+                                    # TOPRIGHT
+                                    self.player.targetVelocities['gear'] = vector.Vector(-1*gearCollide.offsetVector.x, gearCollide.offsetVector.y)
+                            else: 
+                                if self.player.rect.centerx < gearCollide.rect.centerx:
+                                    # BOTTOMLEFT
+                                    self.player.targetVelocities['gear'] = vector.Vector(gearCollide.offsetVector.x, -1*gearCollide.offsetVector.y)
+                                else:
+                                    # BOTTOMRIGHT
+                                    self.player.targetVelocities['gear'] = gearCollide.offsetVector
+                        # CLOCKWISE
+                        if gearCollide.clockwise:
+                            # kill player if touched both cc and clockwise
+                            if touchedCounterClockwise:
+                                self.dead = True
+                            touchedClockwise = True
+                        # COUNTERCLOCKWISE
+                        else:
+                            # kill player if touched both cc and clockwise
+                            if touchedClockwise:
+                                self.dead = True
+                            touchedCounterClockwise = True
+                else:
+                    self.player.accels['gear'] = 0.0
+                    self.player.targetVelocities['gear'] = vector.Vector(None, None)
+                # check more collisions
+                collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
+                collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
+                collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
+                # if a player's standing on something, reset jump
+                if collisionList:
+                    for collider in collisionList:
+                        if self.player.rect.centery < collider.rect.bottom:
+                            self.player.jumping = False
+                            self.player.accels['gravity'] = 0.0
+                            self.player.velocity.y = 0.0
+                    # if there were collisions with player, resolve intersections
+                    physicsManager.resolveIntersection(self.player, collisionList)
+                else:
+                    self.player.accels['gravity'] = 4.0
+                # prevent player from leaving top left bottom
+                if self.player.rect.centerx < 0:
+                    self.player.moveTo(-1*self.player.rect.centerx, self.player.pos.y)
+                if self.player.rect.centery < 0:
+                    self.player.moveTo(self.player.pos.x, self.player.rect.centery)
+                if self.player.rect.x > 480:
+                    self.player.moveTo(480, self.player.pos.y)
+                if self.player.rect.center[1] > self.height:
+                    self.dead = True
+                    #deathActor = self.get_death_actor(self.player.pos.x, self.player.pos.y, -30)
+                    #self.loop_death(deathActor)
+                # check if the player got to the top ladder
+                if collisionNextLevel:
+                    self.game_load = True
+                    
+            # PLAYER IS DEAD RIGHT HERE. If so, play sound and start dying sequence
             else:
-                self.player.accels['gear'] = 0.0
-                self.player.targetVelocities['gear'] = vector.Vector(None, None)
-            # check more collisions
-            collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders))
-            collisionList.extend(physicsManager.checkCollisionAgainstGroup(self.player, self.ladders1))
-            collisionNextLevel = physicsManager.checkCollisionAgainstGroup(self.player, self.ladders)
-            #collisionDeath = physicsManager.checkCollisionAgainstGroup(self.player, self.walls)
-            collisionDeath = False
-	    # if a player's standing on something, reset jump
-            if collisionList:
-                for collider in collisionList:
-                    if self.player.rect.centery < collider.rect.bottom:
-                        self.player.jumping = False
-                        self.player.accels['gravity'] = 0.0
-                        self.player.velocity.y = 0.0
-                # if there were collisions with player, resolve intersections
-                physicsManager.resolveIntersection(self.player, collisionList)
-            else:
-                self.player.accels['gravity'] = 4.0
-            # prevent player from leaving top left bottom
-            if self.player.rect.centerx < 0:
-                self.player.moveTo(-1*self.player.rect.centerx, self.player.pos.y)
-            if self.player.rect.centery < 0:
-                self.player.moveTo(self.player.pos.x, self.player.rect.centery)
-            if self.player.rect.x > 480:
-                self.player.moveTo(480, self.player.pos.y)
-            if self.player.rect.center[1] > self.height:
-                collisionDeath = True
-                #deathActor = self.get_death_actor(self.player.pos.x, self.player.pos.y, -30)
-                #self.loop_death(deathActor)
-            # check if the player got to the top ladder
-            if collisionNextLevel:
-                self.game_load = True
-            if collisionDeath:
-                self.game_state = "LOSE"
-                self.sound.playMusic('Clock Strikes Twelve.mp3', 1)
-            # if there were collisions with player, resolve intersections
-
+                # player just died
+                if not self.dying:
+                    self.dying = True
+                    self.doneDying = False
+                    self.sound.playMusic('Clock Strikes Twelve.mp3', 1)
+                    self.deathOrientation = self.player.curr_orientation
+                    self.player = self.get_death_actor(self.player.pos.x - 65, self.player.pos.y - 35, -30)
+                    self.actors.append(self.player)
+                    # remove the player from the actor list
+                    for i, a in enumerate(self.actors):
+                        if type(a) is playerActor.PlayerActor:
+                            del self.actors[i]
+                            break
+                    self.deathAnimationTimer = 0
+                    
+                # player death animation updating every 2nd frame (NOTE player = deathActor!)
+                elif not self.doneDying:
+                    if not self.deathAnimationTimer % 2:
+                        self.player.updateAnimation('death' + self.deathOrientation)
+                    self.deathAnimationTimer += 1
+                    if self.deathAnimationTimer > 18:
+                        self.doneDying = True
+                # we are finished dying. Clear flags
+                else:
+                    self.game_state = "LOSE"
+                    self.dying = False
+                    self.doneDying = True
+                    self.dead = False
                 
 
     def on_render(self):
@@ -341,16 +369,6 @@ class App:
                                                     scale)
         deathAnimation.update_frame("death" + self.player.curr_orientation)
         return actor.Actor(vector.Vector(x, y), deathAnimation, False, 120, (self.renderables))
-
-    def loop_death(self, death_actor):
-        count = 0
-        for i in range(9):
-            if count == 10:
-                death_actor.get_current_frame()
-                death_actor.update_current_frame()
-                count = 0
-            else:
-                count += 1
 
     def get_lVertGearActor(self, x, y, clockwise):
         """
