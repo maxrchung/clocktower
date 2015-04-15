@@ -27,6 +27,7 @@ class PlayerActor(actor.Actor):
         self.tearLeft = pygame.transform.smoothscale(self.tearLeft, (88,132))
 
         self.tear = self.tearRight
+        self.idleTimer = 0
 
     def update(self):
         # update the input manager
@@ -68,13 +69,18 @@ class PlayerActor(actor.Actor):
         if self.curr_orientation != self.prev_orientation: # case: Turned
             self.timer = 0
             self.turning = True
-        if self.turning and self.timer < 7:
+        if self.turning and self.timer < 5:
             self.updateAnimation("turnTo" + self.curr_orientation)
             self.timer += 1
         elif (self.input.L_DOWN or self.input.R_DOWN) and not self.jumping:
             self.updateAnimation("move" + self.curr_orientation)
         else:
-            self.updateAnimation("idle" + self.curr_orientation)
+            #self.turning = False    uncommenting this will fix the eternal spinning bug
+            if self.idleTimer == 3:
+                self.updateAnimation("idle" + self.curr_orientation)
+                self.idleTimer = 0
+            else:
+                self.idleTimer += 1
 '''
         if self.timer in (2, 4):
             if self.turning != -1:
